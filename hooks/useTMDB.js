@@ -32,11 +32,13 @@ const useMovieData = () => {
     }
   };
 
-  const getDiscoverContent = (page = 1) => {
+  const getDiscoverMovies = (page = 1) => {
     const url = `${BASE_URL}/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc`;
     console.log('fetching discover')
     fetchData(url);
   };
+
+
 
   const getMovieDetails = (movieId) => {
     const url = `${BASE_URL}/movie/${movieId}?language=en-US`;
@@ -52,7 +54,7 @@ const useMovieData = () => {
     data,
     loading,
     error,
-    getDiscoverContent,
+    getDiscoverMovies,
     getMovieDetails,
     getMovieCast
   };

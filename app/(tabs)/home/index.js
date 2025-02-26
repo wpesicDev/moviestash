@@ -5,10 +5,10 @@ import useTMDB from '../../../hooks/useTMDB';
 import { useEffect } from 'react';
 
 export default function Index() {
-  const { data, loading, error, getDiscoverContent } = useTMDB();
+  const { data, loading, error, getDiscoverMovies } = useTMDB();
 
   useEffect(() => {
-    getDiscoverContent();
+    getDiscoverMovies();
   }, []);
 
   if (loading) return <Text>Loading...</Text>;
