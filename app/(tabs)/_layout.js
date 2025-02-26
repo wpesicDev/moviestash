@@ -20,8 +20,7 @@ export default function HomeLayout() {
             name: "settings/index",
             title: "Profile",
             icon: "person-outline"
-        }
-
+        },
     ]
     return (
         <Tabs>

@@ -6,6 +6,7 @@ import useTMDB from '../../../hooks/useTMDB';
 import { useEffect, useState } from 'react';
 import MovieSlider from '../../../components/movieSlider';
 import CustomText from '../../../components/customText';
+import { Link } from 'expo-router';
 
 export default function Index() {
   const [search, setSearch] = useState('');

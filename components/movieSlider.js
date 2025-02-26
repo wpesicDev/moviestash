@@ -1,18 +1,18 @@
 import { FlatList } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import useTMDB from '../hooks/useTMDB';
-import { useEffect } from 'react';
+import { Link } from 'expo-router';
 
 export default function MovieSlider(props) {
-    return (
-        <View style={styles.container}>
-        <FlatList
-          horizontal={true}
-          data={props.data?.results}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.movieItem}>
+  return (
+    <View style={styles.container}>
+      <FlatList
+        horizontal={true}
+        data={props.data?.results}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.movieItem}>
+            <Link href={`/movie/${item.id}`}>
               <Image
                 source={{
                   uri: `https://image.tmdb.org/t/p/w300${item.poster_path}`
@@ -20,14 +20,14 @@ export default function MovieSlider(props) {
                 style={{ borderRadius: 12, width: "100%", height: "100%" }}
                 transition={200}
               />
-  
-              <Text style={styles.movieTitle}>{item.title}</Text>
-            </View>
-          )}
-          ItemSeparatorComponent={() => <View style={styles.seperator} />}
-        />
-        <StatusBar style="auto" />
-      </View>
+            </Link>
+            <Text style={styles.movieTitle}>{item.title}</Text>
+          </View>
+        )}
+        ItemSeparatorComponent={() => <View style={styles.seperator} />}
+      />
+      <StatusBar style="auto" />
+    </View>
   );
 }
 const styles = StyleSheet.create({
@@ -54,12 +54,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 5,
   },
-  seperator:{
+  seperator: {
     width: 10,
   },
   movieItem: {
-      height: 250,
-      width: 170,
+    height: 250,
+    width: 170,
   }
 });
 

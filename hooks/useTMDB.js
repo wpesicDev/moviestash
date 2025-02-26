@@ -1,33 +1,41 @@
 import { useState, useEffect } from 'react';
 
 const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
-console.log(API_KEY)
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 const useMovieData = () => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchData = async (url, dataType) => {
+  const fetchData = async (url, dataType, movieId = null) => {
     setLoading(true);
     setError(null);
     try {
       const response = await fetch(url, {
         headers: {
-          'Authorization': `Bearer ${API_KEY}`,
-          'accept': 'application/json'
-        }
+          Authorization: `Bearer ${API_KEY}`,
+          Accept: 'application/json',
+        },
       });
-      console.log(response);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const result = await response.json();
-      setData(prevData => ({
-        ...prevData,
-        [dataType]: result
-      }));
+      if (movieId) {
+        setData((prevData) => ({
+          ...prevData,
+          movieDetails: {
+            ...prevData.movieDetails,
+            [movieId]: result,
+          },
+        }));
+      } else {
+        setData((prevData) => ({
+          ...prevData,
+          [dataType]: result,
+        }));
+      }
     } catch (error) {
       setError(error.message);
     } finally {
@@ -37,24 +45,17 @@ const useMovieData = () => {
 
   const getDiscoverMovies = (page = 1) => {
     const url = `${BASE_URL}/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc`;
-    console.log('fetching discover')
     fetchData(url, 'movies');
   };
 
   const getDiscoverShows = (page = 1) => {
     const url = `${BASE_URL}/discover/tv?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc`;
-    console.log('fetching discover')
     fetchData(url, 'shows');
   };
 
   const getMovieDetails = (movieId) => {
-    const url = `${BASE_URL}/movie/${movieId}?language=en-US`;
-    fetchData(url);
-  };
-
-  const getMovieCast = (movieId) => {
-    const url = `${BASE_URL}/movie/${movieId}/credits?language=en-US`;
-    fetchData(url);
+    const url = `${BASE_URL}/movie/${movieId}?append_to_response=credits&language=en-US`;
+    fetchData(url, null, movieId);
   };
 
   return {
@@ -64,7 +65,6 @@ const useMovieData = () => {
     getDiscoverMovies,
     getDiscoverShows,
     getMovieDetails,
-    getMovieCast
   };
 };
 
