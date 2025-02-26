@@ -5,8 +5,8 @@ import useTMDB from '../../hooks/useTMDB';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MovieDetail() {
-  const { id } = useLocalSearchParams();
-  const { data, getMovieDetails } = useTMDB();
+  const { id, type } = useLocalSearchParams();
+  const { data, getMovieDetails, getShowDetails } = useTMDB();
   const [localLoading, setLocalLoading] = useState(true);
   const [localError, setLocalError] = useState(null);
   const navigation = useNavigation();
@@ -17,7 +17,11 @@ export default function MovieDetail() {
         setLocalLoading(true);
         setLocalError(null);
         try {
-          await getMovieDetails(id);
+          if (type === 'movie') {
+            await getMovieDetails(id);
+          } else if ( type === 'show') {
+            await getShowDetails(id); 
+          }
         } catch (err) {
           setLocalError(err.message);
         } finally {
@@ -33,9 +37,9 @@ export default function MovieDetail() {
   const movieDetails = data?.movieDetails?.[id];
 
   useEffect(() => {
-    if (movieDetails?.title) {
+    if (movieDetails?.title || movieDetails?.name) {
       navigation.setOptions({
-        title: movieDetails.title,
+        title: movieDetails.name ?? movieDetails.name,
         headerBlurEffect: 'regular',
         headerTransparent: true,
       });
@@ -114,7 +118,6 @@ export default function MovieDetail() {
       <Text>{movieDetails.overview}</Text>
       
       <Text>Movie ID: {id}</Text>
-      <Text>Title: {movieDetails.title}</Text>
       </SafeAreaView>
 
   );
