@@ -5,10 +5,11 @@ import useTMDB from '../../../hooks/useTMDB';
 import { useEffect } from 'react';
 
 export default function Index() {
-  const { data, loading, error, getDiscoverMovies } = useTMDB();
+  const { data, loading, error, getDiscoverMovies, getDiscoverShows } = useTMDB();
 
   useEffect(() => {
     getDiscoverMovies();
+    getDiscoverShows();
   }, []);
 
   if (loading) return <Text>Loading...</Text>;
@@ -18,7 +19,7 @@ export default function Index() {
     <View style={styles.container}>
       <FlatList
         horizontal={true}
-        data={data?.results}
+        data={data?.movies.results}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.movieItem}>
@@ -35,6 +36,32 @@ export default function Index() {
           </View>
         )}
       />
+
+
+
+      <Text>getDiscoverShows</Text>
+
+      <FlatList
+        horizontal={true}
+        data={data?.shows.results}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.movieItem}>
+
+            <Image
+              source={{
+                uri: `https://image.tmdb.org/t/p/w300${item.poster_path}`
+              }}
+              style={{ borderRadius: 12, width: "100%", height: "100%" }}
+              transition={200}
+            />
+
+            <Text style={styles.movieTitle}>{item.poster_path}</Text>
+          </View>
+        )}
+      />
+
+
       
       <StatusBar style="auto" />
     </View>

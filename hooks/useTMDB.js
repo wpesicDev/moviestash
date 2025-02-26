@@ -9,7 +9,7 @@ const useMovieData = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchData = async (url) => {
+  const fetchData = async (url, dataType) => {
     setLoading(true);
     setError(null);
     try {
@@ -19,12 +19,15 @@ const useMovieData = () => {
           'accept': 'application/json'
         }
       });
-      console.log(response)
+      console.log(response);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const result = await response.json();
-      setData(result);
+      setData(prevData => ({
+        ...prevData,
+        [dataType]: result
+      }));
     } catch (error) {
       setError(error.message);
     } finally {
@@ -35,10 +38,14 @@ const useMovieData = () => {
   const getDiscoverMovies = (page = 1) => {
     const url = `${BASE_URL}/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc`;
     console.log('fetching discover')
-    fetchData(url);
+    fetchData(url, 'movies');
   };
 
-
+  const getDiscoverShows = (page = 1) => {
+    const url = `${BASE_URL}/discover/tv?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc`;
+    console.log('fetching discover')
+    fetchData(url, 'shows');
+  };
 
   const getMovieDetails = (movieId) => {
     const url = `${BASE_URL}/movie/${movieId}?language=en-US`;
@@ -55,6 +62,7 @@ const useMovieData = () => {
     loading,
     error,
     getDiscoverMovies,
+    getDiscoverShows,
     getMovieDetails,
     getMovieCast
   };
