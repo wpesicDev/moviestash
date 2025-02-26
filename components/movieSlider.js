@@ -10,6 +10,7 @@ export default function MovieSlider(props) {
     <View style={styles.container}>
       <FlatList
         horizontal={true}
+        showsHorizontalScrollIndicator={false}
         data={props.data?.results}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
@@ -37,7 +38,7 @@ export default function MovieSlider(props) {
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    maxHeight: 350,
+    maxHeight: 300,
     backgroundColor: '#fff',
     alignItems: 'center',
   },
@@ -62,8 +63,8 @@ const styles = StyleSheet.create({
     width: 10,
   },
   movieItem: {
-    height: 250,
-    width: 170,
+    height: 200,
+    width: 130,
   }
 });
 

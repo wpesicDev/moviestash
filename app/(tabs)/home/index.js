@@ -18,12 +18,13 @@ export default function Index() {
   useEffect(() => {
        getDiscoverMovies();
        getDiscoverShows();
+       navigation.setOptions({
+        headerTitle: '',
+        headerShadowVisible: false, 
+        headerBackTitleVisible: false,
+      });
   }, []);
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, []);
+
 
   const updateSearch = (search) => {
     setSearch(search);
@@ -35,9 +36,9 @@ export default function Index() {
     <SafeAreaView>
       <ScrollView contentContainerStyle={styles.container}>
         <CustomText variant="display" align="left">Search</CustomText>
-        <CustomText variant="headline" align="left">Movies</CustomText>
+        <CustomText  variant="title" align="left">Popular Movies</CustomText>
         <MovieSlider data={data?.movies}/>
-        <CustomText variant="headline" align="left">Shows</CustomText>
+        <CustomText  variant="title" align="left">Popular Series</CustomText>
         <MovieSlider data={data?.shows}/>
       </ScrollView>
     </SafeAreaView>
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   image: {
-    width: 150,
+    width: 10,
     height: 225,
     resizeMode: 'cover',
   },
