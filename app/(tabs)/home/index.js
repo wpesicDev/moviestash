@@ -1,75 +1,40 @@
+import { ScrollView } from 'react-native';
 import { FlatList } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import useTMDB from '../../../hooks/useTMDB';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import MovieSlider from '../../../components/movieSlider';
+import CustomText from '../../../components/customText';
 
 export default function Index() {
+  const [search, setSearch] = useState('');
   const { data, loading, error, getDiscoverMovies, getDiscoverShows } = useTMDB();
 
   useEffect(() => {
-    getDiscoverMovies();
-    getDiscoverShows();
+       getDiscoverMovies();
+       getDiscoverShows();
   }, []);
+
+  const updateSearch = (search) => {
+    setSearch(search);
+  };
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
-
   return (
-    <View style={styles.container}>
-      <FlatList
-        horizontal={true}
-        data={data?.movies.results}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.movieItem}>
-
-            <Image
-              source={{
-                uri: `https://image.tmdb.org/t/p/w300${item.poster_path}`
-              }}
-              style={{ borderRadius: 12, width: "100%", height: "100%" }}
-              transition={200}
-            />
-
-            <Text style={styles.movieTitle}>{item.poster_path}</Text>
-          </View>
-        )}
-      />
-
-
-
-      <Text>getDiscoverShows</Text>
-
-      <FlatList
-        horizontal={true}
-        data={data?.shows.results}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.movieItem}>
-
-            <Image
-              source={{
-                uri: `https://image.tmdb.org/t/p/w300${item.poster_path}`
-              }}
-              style={{ borderRadius: 12, width: "100%", height: "100%" }}
-              transition={200}
-            />
-
-            <Text style={styles.movieTitle}>{item.poster_path}</Text>
-          </View>
-        )}
-      />
-
-
-      
-      <StatusBar style="auto" />
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <CustomText variant="display" align="left">Search</CustomText>
+      <CustomText variant="headline" align="left">Movies</CustomText>
+      <MovieSlider data={data?.movies}/>
+      <CustomText variant="headline" align="left">Shows</CustomText>
+      <MovieSlider data={data?.shows}/>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: "flex",
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -93,3 +58,4 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
 });
+
