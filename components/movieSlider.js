@@ -2,6 +2,8 @@ import { FlatList } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Link } from 'expo-router';
+import Ionicons from "@expo/vector-icons/Ionicons"
+import RatingContainer from './ratingContainer';
 
 export default function MovieSlider(props) {
   return (
@@ -21,7 +23,8 @@ export default function MovieSlider(props) {
                 transition={200}
               />
             </Link>
-            <Text style={styles.movieTitle}>{item.title}</Text>
+            <Text>{item.title ?? item.name}</Text>
+            <RatingContainer item={item}/>
           </View>
         )}
         ItemSeparatorComponent={() => <View style={styles.seperator} />}
@@ -30,6 +33,7 @@ export default function MovieSlider(props) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     display: "flex",
