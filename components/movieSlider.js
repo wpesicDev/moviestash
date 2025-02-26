@@ -14,7 +14,7 @@ export default function MovieSlider(props) {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.movieItem}>
-            <Link href={`/movie/${item.id}`}>
+            <Link push href={`/movie/${item.id}`}>
               <Image
                 source={{
                   uri: `https://image.tmdb.org/t/p/w300${item.poster_path}`

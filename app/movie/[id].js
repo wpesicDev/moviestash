@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import useTMDB from '../../../hooks/useTMDB';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
+import useTMDB from '../../hooks/useTMDB';
 
 export default function MovieDetail() {
   const { id } = useLocalSearchParams();
   const { data, getMovieDetails } = useTMDB();
   const [localLoading, setLocalLoading] = useState(true);
   const [localError, setLocalError] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -25,6 +26,15 @@ export default function MovieDetail() {
   }, [id, getMovieDetails]);
 
   const movieDetails = data?.movieDetails?.[id];
+
+  //Update header title lol
+  useEffect(() => {
+    if (movieDetails?.title) {
+      navigation.setOptions({
+        title: movieDetails.title
+      });
+    }
+  }, [movieDetails, navigation]);
 
   if (localLoading) {
     return (
