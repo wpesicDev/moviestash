@@ -39,7 +39,7 @@ export default function MovieDetail() {
   useEffect(() => {
     if (movieDetails?.title || movieDetails?.name) {
       navigation.setOptions({
-        title: movieDetails.name ?? movieDetails.name,
+        title: movieDetails.title ?? movieDetails.name,
         headerBlurEffect: 'regular',
         headerTransparent: true,
       });
