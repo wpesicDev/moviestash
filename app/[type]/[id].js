@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomText from '../../components/customText';
 import RatingContainer from '../../components/ratingContainer';
 import * as Haptics from 'expo-haptics';
+import * as WebBrowser from 'expo-web-browser';
 
 export default function MovieDetail() {
   const { id, type } = useLocalSearchParams();
@@ -197,9 +198,9 @@ export default function MovieDetail() {
           <Text style={styles.overview}>{movieDetails.overview}</Text>
 
           {movieDetails.homepage && (
-            <Link href={movieDetails.homepage}>
+            <TouchableOpacity onPress={() => WebBrowser.openBrowserAsync(movieDetails.homepage)}>
               <Text style={styles.infoText}>Website: {movieDetails.homepage}</Text>
-            </Link>
+            </TouchableOpacity>
           )}
 
         </View>
