@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { View, Text, Image } from 'react-native';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { View, Text, Image, FlatList, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Link, useLocalSearchParams, useNavigation } from 'expo-router';
 import useTMDB from '../../hooks/useTMDB';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import CustomText from '../../components/customText';
+import RatingContainer from '../../components/ratingContainer';
 
 export default function MovieDetail() {
   const { id, type } = useLocalSearchParams();
@@ -23,40 +24,41 @@ export default function MovieDetail() {
   };
 
   const toggleFavorite = async () => {
+    console.log(movieDetails)
     try {
       const currentMovie = {
-        id: movieDetails.id, 
+        id: movieDetails.id,
         title: movieDetails.title,
-        name: movieDetails.name, 
-        poster_path: movieDetails.poster_path, 
-        genres: movieDetails.genres, 
+        name: movieDetails.name,
+        poster_path: movieDetails.poster_path,
+        genres: movieDetails.genres,
         tagline: movieDetails.tagline
       };
-  
+
       // Retrieve the current list of favorites from AsyncStorage
       const favorites = await AsyncStorage.getItem('favourites');
       let favoritesOBJ = favorites ? JSON.parse(favorites) : [];
-  
+
       // Check if the movie is already in favorites
       const index = favoritesOBJ.findIndex(movie => movie.id === currentMovie.id);
-  
+
       if (index === -1) { // Not in favorites, add it
         favoritesOBJ.push(currentMovie);
         setFavouriteIcon("heart");
         console.log("Added to favorites: ", currentMovie);
-      } else { 
+      } else {
         favoritesOBJ.splice(index, 1);
         setFavouriteIcon("heart-outline");
         console.log("Removed from favorites");
       }
-  
+
       await AsyncStorage.setItem('favourites', JSON.stringify(favoritesOBJ));
       console.log("Updated favorites: ", favoritesOBJ);
     } catch (error) {
       console.error("Error updating favorites: ", error);
     }
   };
-  
+
 
   // Set header options initially to prevent flickering
   useEffect(() => {
@@ -130,60 +132,221 @@ export default function MovieDetail() {
   }
 
   return (
-    <SafeAreaView style={{ marginBottom: 24 }}>
-      <Image
-        source={{
-          uri: `https://image.tmdb.org/t/p/w780${movieDetails.backdrop_path}`,
-        }}
-        style={{
-          width: "100%",
-          height: 300,
-          resizeMode: "cover",
-        }}
-        transition={300}
-      />
-      <View style={{ padding: 16, marginTop: -60, flexDirection: "row" }}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ paddingTop: 24 }}>
         <Image
           source={{
-            uri: `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`,
+            uri: `https://image.tmdb.org/t/p/w780${movieDetails.backdrop_path}`,
           }}
           style={{
-            width: 100,
-            height: 150,
-            borderRadius: 8,
-            marginRight: 16,
+            width: "100%",
+            height: 300,
+            resizeMode: "cover",
           }}
           transition={300}
         />
-        <View style={{ flex: 1, justifyContent: "flex-end" }}>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              color: 'grey',
-              marginBottom: 8,
+        <View style={{ padding: 16, marginTop: -60, flexDirection: "row" }}>
+          <Image
+            source={{
+              uri: `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`,
             }}
-          >
-          </Text>
-          <Text
-            style={{ fontSize: 24, color: 'grey', fontWeight: 700 }}
-            numberOfLines={2}
-          >
-            {movieDetails.title ?? movieDetails.name}
-          </Text>
-          <Text style={{ fontSize: 15, color: 'grey', opacity: 0.8 }}>
-            {movieDetails.tagline}
-          </Text>
+            style={{
+              width: 100,
+              height: 150,
+              borderRadius: 8,
+              marginRight: 16,
+            }}
+            transition={300}
+          />
+          <View style={{ flex: 1, justifyContent: "flex-end" }}>
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: "bold",
+                color: 'grey',
+                marginBottom: 8,
+              }}
+            >
+            </Text>
+
+            <RatingContainer item={movieDetails}/>
+            <Text
+              style={{ fontSize: 24, color: 'grey', fontWeight: 700 }}
+              numberOfLines={2}
+            >
+              {movieDetails.title ?? movieDetails.name}
+            </Text>
+            <Text style={{ fontSize: 15, color: 'grey', opacity: 0.8 }}>
+              {movieDetails.tagline}
+            </Text>
+          </View>
         </View>
-      </View>
-      <Text>{movieDetails.overview}</Text>
-      <Text>Movie ID: {id}</Text>
-      <Ionicons 
-        name={favoriteIcon} 
-        size={24} 
-      color={"#FF0000"} 
-      onPress={toggleFavorite}
-    />
+
+        <View style={styles.infoContainer}>
+          {movieDetails.original_language && (
+            <Text style={styles.infoText}>Language: {movieDetails.original_language}</Text>
+          )}
+
+          <Text style={styles.overview}>{movieDetails.overview}</Text>
+
+          {movieDetails.homepage && (
+            <Link href={movieDetails.homepage}>
+              <Text style={styles.infoText}>Website: {movieDetails.homepage}</Text>
+            </Link>
+          )}
+
+        </View>
+
+        <View style={styles.prodContainer}>
+          <Text style={styles.sectionTitle}>Production Companies</Text>
+          <FlatList
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            data={movieDetails.production_companies}
+            keyExtractor={(studio) => studio.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.prodItem}>
+                <Image
+                  source={{ uri: `https://image.tmdb.org/t/p/w300${item.logo_path}` }}
+                  style={styles.prodImage}
+                  transition={200}
+                />
+                <Text style={styles.castName}>{item.name}</Text>
+              </View>
+            )}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
+            contentContainerStyle={styles.castList}
+          />
+        </View>
+
+        <View style={styles.castContainer}>
+          <Text style={styles.sectionTitle}>Cast</Text>
+          <FlatList
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            data={movieDetails.credits.cast}
+            keyExtractor={(cast) => cast.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.castItem}>
+                <Image
+                  source={
+                    item.profile_path
+                      ? { uri: `https://image.tmdb.org/t/p/w300${item.profile_path}` }
+                      : require('../../assets/profile-placeholder.png')
+                  }
+                  style={styles.castImage}
+                  transition={200}
+                />
+                <Text style={styles.castName}>{item.name}</Text>
+                <Text style={styles.castCharacter}>{item.character}</Text>
+              </View>
+            )}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
+            contentContainerStyle={styles.castList}
+          />
+        </View>
+
+        <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteContainer}>
+          <Ionicons
+            name={favoriteIcon}
+            size={24}
+            color="#FF0000"
+            style={styles.favoriteIcon}
+          />
+          <Text style={styles.favoriteText}>
+            {favoriteIcon === "heart" ? "Remove from favorites" : "Add to favorites"}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  infoContainer: {
+    padding: 16,
+  },
+  overview: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 16,
+    color: '#333',
+  },
+  infoText: {
+    fontSize: 14,
+    marginBottom: 8,
+    color: '#555',
+  },
+  prodContainer: {
+    marginVertical: 20,
+    paddingHorizontal: 16,
+  },
+  prodItem: {
+    width: 100,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  prodImage: {
+    width: 80,
+    height: 80,
+    resizeMode: "contain",
+  },
+  castContainer: {
+    marginVertical: 20,
+    paddingHorizontal: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  castList: {
+    paddingVertical: 10,
+  },
+  castItem: {
+    width: 100,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  castImage: {
+    width: 100,
+    height: 150,
+    borderRadius: 12,
+    resizeMode: 'cover',
+  },
+  castName: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 5,
+    color: '#333',
+    width: 100,
+  },
+  castCharacter: {
+    fontSize: 10,
+    textAlign: 'center',
+    marginTop: 5,
+    color: '#333',
+    width: 100,
+  },
+  separator: {
+    width: 10,
+  },
+  favoriteContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 20,
+    padding: 10,
+  },
+  favoriteIcon: {
+    marginRight: 10,
+  },
+  favoriteText: {
+    fontSize: 16,
+    color: '#555',
+  },
+});
