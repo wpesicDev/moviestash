@@ -214,7 +214,11 @@ export default function MovieDetail() {
             renderItem={({ item }) => (
               <View style={styles.prodItem}>
                 <Image
-                  source={{ uri: `https://image.tmdb.org/t/p/w300${item.logo_path}` }}
+                  source={
+                    item.logo_path
+                    ? { uri: `https://image.tmdb.org/t/p/w300${item.logo_path}` }
+                    : require('../../assets/production-placeholder.png')
+                    }
                   style={styles.prodImage}
                   transition={200}
                 />
