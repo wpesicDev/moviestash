@@ -1,6 +1,4 @@
 import { ScrollView } from 'react-native';
-import { FlatList } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, SafeAreaView, TextInput } from 'react-native';
 import useTMDB from '../../../hooks/useTMDB';
 import { useEffect, useState } from 'react';
