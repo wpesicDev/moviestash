@@ -1,22 +1,29 @@
-import { View, FlatList, Image, StyleSheet, SafeAreaView, } from "react-native";
+import { View, FlatList, Image, StyleSheet, SafeAreaView, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomText from "./customText";
 import RatingContainer from "./ratingContainer";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from 'expo-router';
-
+import * as Haptics from 'expo-haptics';
 
 export default function MovieList({ data }) {
     const [favoriteIcon, setFavouriteIcon] = useState(false);
 
-    const checkFavoriteStatus = async () => {
-        const favorites = await AsyncStorage.getItem('favourites');
-        const favoritesOBJ = favorites ? JSON.parse(favorites) : [];
-        const isFavorite = favoritesOBJ.some(movie => movie.id === movieDetails.id);
-        setFavouriteIcon(isFavorite ? "heart" : "heart-outline");
-    };
+    useEffect(() => {
+        const checkFavoriteStatus = async (movieDetails) => {
+            const favorites = await AsyncStorage.getItem('favourites');
+            const favoritesOBJ = favorites ? JSON.parse(favorites) : [];
+            const isFavorite = favoritesOBJ.some(movie => movie.id === movieDetails.id);
+            setFavouriteIcon(isFavorite ? "heart" : "heart-outline");
+        };
 
-    const toggleFavorite = async () => {
+        if (data.length > 0) {
+            checkFavoriteStatus(data[0]); 
+        }
+    }, [data]);
+
+    const toggleFavorite = async (movieDetails) => {
         try {
             const currentMovie = {
                 id: movieDetails.id,
@@ -25,7 +32,6 @@ export default function MovieList({ data }) {
                 poster_path: movieDetails.poster_path,
                 genres: movieDetails.genres,
                 tagline: movieDetails.tagline,
-                genres: movieDetails.genres,
                 overview: movieDetails.overview,
                 vote_average: movieDetails.vote_average,
             };
@@ -37,21 +43,23 @@ export default function MovieList({ data }) {
 
             if (index === -1) {
                 favoritesOBJ.push(currentMovie);
+                Haptics.notificationAsync(
+                    Haptics.NotificationFeedbackType.Success
+                )
                 setFavouriteIcon("heart");
-                console.log("Added to favorites: ", currentMovie);
             } else {
                 favoritesOBJ.splice(index, 1);
+                Haptics.notificationAsync(
+                    Haptics.NotificationFeedbackType.Warning
+                 )
                 setFavouriteIcon("heart-outline");
-                console.log("Removed from favorites");
             }
 
             await AsyncStorage.setItem('favourites', JSON.stringify(favoritesOBJ));
-            console.log("Updated favorites: ", favoritesOBJ);
         } catch (error) {
             console.error("Error updating favorites: ", error);
         }
     };
-
 
     return (
         <SafeAreaView style={styles.container}>
@@ -61,21 +69,15 @@ export default function MovieList({ data }) {
                 showsHorizontalScrollIndicator={false}
                 data={data}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) =>
-                    item.poster_path ? (
+                renderItem={({ item }) => (
+                    <View style={styles.listItemContainer}>
                         <Link push href={`/${item.title ? 'movie' : 'show'}/${item.id}`}>
                             <View style={styles.movieItem}>
                                 <Image
                                     source={{
                                         uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
                                     }}
-                                    style={{
-                                        width: 100,
-                                        height: 150,
-                                        borderRadius: 8,
-                                        marginRight: 16,
-                                    }}
-                                    transition={300}
+                                    style={styles.movieImage}
                                 />
                                 <View style={styles.movieItemTextContainer}>
                                     <CustomText variant="title" numberOfLines={2}>
@@ -89,61 +91,62 @@ export default function MovieList({ data }) {
                                         {item.tagline ? item.tagline : (item.overview ? `${item.overview.substring(0, 35)}...` : 'No Description')}
                                     </CustomText>
                                     <RatingContainer item={item} style={styles.ratingContainer} />
-                                    <View style={styles.lowerContainer}>
-                                        {item.genres && item.genres.length > 0 && (
-                                            <View style={styles.genreContainer}>
-                                                {item.genres.slice(0, 2).map((genre, index) => (
-                                                    <CustomText key={genre.id} color="white" style={styles.labels}>
-                                                        {genre.name}
-                                                    </CustomText>
-                                                ))}
-                                            </View>
-                                        )}
-
-                                        <Ionicons
-                                            name="heart"
-                                            size={24}
-                                            color={"#FF0000"}
-                                            onPress={toggleFavorite}
-                                        />
+                                    <View style={styles.genreContainer}>
+                                        {item.genres && item.genres.splice(0, 2).map((genre, index) => (
+                                            <CustomText key={genre.id} color="white" style={styles.labels}>
+                                                {genre.name}
+                                            </CustomText>
+                                        ))}
                                     </View>
                                 </View>
                             </View>
                         </Link>
-                    ) : null
-                }
+                        <TouchableOpacity onPress={() => toggleFavorite(item)}>
+                            <Ionicons name={favoriteIcon} size={24} color={"#FF0000"} />
+                        </TouchableOpacity>
+                    </View>
+                )}
             />
         </SafeAreaView>
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 10,
+        paddingHorizontal: 10, 
         width: "100%",
+    },
+    listItemContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "95%",
+        paddingRight: 10, 
     },
     movieItem: {
         flexDirection: "row",
-        width: "100%",
-        padding: 10,
+        alignItems: "center", 
+        flex: 1, 
+        marginRight: 8, 
     },
-    flatListContainer: {
-        flexGrow: 1,
-        padding: 5,
+    movieImage: {
+        width: 100,
+        height: 150,
+        borderRadius: 8,
+        marginRight: 16, 
     },
     movieItemTextContainer: {
         flex: 1,
         flexDirection: "column",
         justifyContent: "center",
-        padding: 10,
     },
-    lowerContainer: {
+    genreContainer: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        width: "100%",
+        flexWrap: 'wrap',
+        gap: 5,
     },
     labels: {
         backgroundColor: "#8e8e93",
@@ -151,15 +154,11 @@ const styles = StyleSheet.create({
         width: "auto",
         borderRadius: 5,
     },
-    genreContainer: {
-        flexDirection: "row",
-        flexWrap: 'wrap',
-        gap: 5,
-    },
     ratingContainer: {
         paddingBottom: 10,
     },
+    flatListContainer: {
+        flexGrow: 1,
+        padding: 5,
+    },
 });
-
-
-
