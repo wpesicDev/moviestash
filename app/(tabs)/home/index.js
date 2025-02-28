@@ -15,7 +15,6 @@ export default function Index() {
 
   const { data, loading, error, getDiscoverMovies, getDiscoverShows, getSearchResults} = useTMDB();
   const navigation = useNavigation();
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
@@ -42,11 +41,11 @@ export default function Index() {
       headerBackTitleVisible: false,
     });
   }, []);
-
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.safeAreaView}>
+      <CustomText variant="display" align="left" style={styles.title}>Search</CustomText>
       <ScrollView contentContainerStyle={styles.container}>
       <CustomText variant="display" align="left">Home</CustomText>
         <TextInput
@@ -101,6 +100,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
   },
+  safeAreaView: {
+    backgroundColor: '#fff',
+  },
   container: {
     display: "flex",
     backgroundColor: '#fff',
@@ -121,9 +123,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 5,
+    paddingLeft: 10,
   },
 });
 

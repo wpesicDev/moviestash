@@ -3,6 +3,8 @@ import { View, Text, Image } from 'react-native';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import useTMDB from '../../hooks/useTMDB';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import {AsyncStorage} from 'react-native';
 
 export default function MovieDetail() {
   const { id, type } = useLocalSearchParams();
@@ -10,6 +12,17 @@ export default function MovieDetail() {
   const [localLoading, setLocalLoading] = useState(true);
   const [localError, setLocalError] = useState(null);
   const navigation = useNavigation();
+
+  const storeFavorite = async (id) => {
+    try {
+      await AsyncStorage.setItem(
+        'favoriteId:' + id,
+        'I like to save it.',
+      );
+    } catch (error) {
+      console.log("Error saving data: ", error);
+    }
+  };
 
   // Set header options initially to prevent flickering
   useEffect(() => {
@@ -128,6 +141,7 @@ export default function MovieDetail() {
       </View>
       <Text>{movieDetails.overview}</Text>
       <Text>Movie ID: {id}</Text>
+      <Ionicons name="heart-outline" size={24} color={"#FF0000"}/> 
     </SafeAreaView>
   );
 }

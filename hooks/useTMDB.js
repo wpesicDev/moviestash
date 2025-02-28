@@ -18,6 +18,8 @@ const useMovieData = () => {
           Accept: 'application/json',
         },
       });
+
+      console.log(response)
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -42,7 +44,6 @@ const useMovieData = () => {
       setLoading(false);
     }
   };
-
   const getDiscoverMovies = (page = 1) => {
     const url = `${BASE_URL}/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc`;
     fetchData(url, 'movies');
