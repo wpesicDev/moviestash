@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 
-export default function CustomText({ variant, children, align = 'left', style }) {
+export default function CustomText({ variant, children, align = 'left', color = 'black', style }) {
     let fontSize;
     let fontWeight;
 
@@ -31,7 +31,7 @@ export default function CustomText({ variant, children, align = 'left', style })
     }
 
     return (
-        <Text style={{ fontSize, fontWeight, textAlign: align, width: "100%" ,marginBottom: 10}}>
+        <Text style={[{ fontSize, fontWeight, textAlign: align, width: "100%", marginBottom: 10, color }, style]}>
             {children}
         </Text>
     );
