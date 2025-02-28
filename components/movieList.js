@@ -2,13 +2,13 @@ import { View, FlatList, Image, StyleSheet } from "react-native";
 import CustomText from "./customText";
 import RatingContainer from "./ratingContainer";
 import { Ionicons } from "@expo/vector-icons";
-export default function MovieList({data}) {
+export default function MovieList({ data }) {
     return (
         <View style={styles.container}>
             <FlatList
                 horizontal={false}
                 showsHorizontalScrollIndicator={false}
-                data={data.favorites}
+                data={data}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.movieItem}>
@@ -34,13 +34,16 @@ export default function MovieList({data}) {
                             </CustomText>
                             <RatingContainer item={item} style={styles.ratingContainer} />
                             <View style={styles.lowerContainer}>
-                                <View style={styles.genreContainer}>
-                                    {item.genres.slice(0, 3).map((genre) => (
-                                        <CustomText key={genre} color='white' style={styles.labels}>
-                                            {genre}
-                                        </CustomText>
-                                    ))}
-                                </View>
+                                {item.genres && (
+                                    <View style={styles.genreContainer}>
+                                        {item.genres.slice(0, 3).map((genre) => (
+                                            <CustomText key={genre} color="white" style={styles.labels}>
+                                                {genre}
+                                            </CustomText>
+                                        ))}
+                                    </View>
+                                )}
+
                                 <Ionicons name="heart" size={24} color={"#FF0000"} />
                             </View>
                         </View>
@@ -54,36 +57,36 @@ const styles = StyleSheet.create({
     container: {
         padding: 10,
         paddingBottom: 100,
-      },
-      movieItem: {
+    },
+    movieItem: {
         flexDirection: "row",
         paddingTop: 16,
         paddingBottom: 16,
-      },
-      movieItemTextContainer: {
+    },
+    movieItemTextContainer: {
         flexDirection: "column",
         justifyContent: "center",
         maxWidth: "60%",
-    
-      },
-      lowerContainer: {
+
+    },
+    lowerContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "top",
-    
-      },
-      labels: {
+
+    },
+    labels: {
         width: "auto",
         backgroundColor: "#8e8e93",
         padding: 4,
         borderRadius: 5,
-      },
-      genreContainer: {
+    },
+    genreContainer: {
         display: "flex",
         flexDirection: "row",
         gap: 5,
-      },
-      ratingContainer: {
+    },
+    ratingContainer: {
         paddingBottom: 10,
-      },
+    },
 });

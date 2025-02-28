@@ -63,6 +63,11 @@ const useMovieData = () => {
     fetchData(url, 'show', movieId);
   };
 
+  const getSearchResults = (query) => {
+    const url = `${BASE_URL}/search/multi?query=${query}&include_adult=false&language=en-US&page=1`;
+    fetchData(url, 'search'); 
+  }
+
   return {
     data,
     loading,
@@ -71,6 +76,7 @@ const useMovieData = () => {
     getDiscoverShows,
     getMovieDetails,
     getShowDetails,
+    getSearchResults,
   };
 };
 
