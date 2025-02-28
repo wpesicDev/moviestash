@@ -8,13 +8,14 @@ export default function MovieList({ data }) {
     return (
         <View style={styles.container}>
             <FlatList
+                contentContainerStyle={styles.flatListContainer}
                 horizontal={false}
                 showsHorizontalScrollIndicator={false}
                 data={data}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
+                renderItem={({ item }) =>
                     item.poster_path ? (
-                        <Link push href={`/${item.title ? 'movie': 'show'}/${item.id}`}>
+                        <Link push href={`/${item.title ? 'movie' : 'show'}/${item.id}`}>
                             <View style={styles.movieItem}>
                                 <Image
                                     source={{
@@ -29,13 +30,10 @@ export default function MovieList({ data }) {
                                     transition={300}
                                 />
                                 <View style={styles.movieItemTextContainer}>
-                                    <CustomText
-                                        variant="title"
-                                        numberOfLines={2}
-                                    >{item.title ?? item.name}</CustomText>
-                                    <CustomText color='grey'>
-                                        {item.tagline}
+                                    <CustomText variant="title" numberOfLines={2}>
+                                        {item.title ?? item.name}
                                     </CustomText>
+                                    <CustomText color="grey">{item.tagline}</CustomText>
                                     <RatingContainer item={item} style={styles.ratingContainer} />
                                     <View style={styles.lowerContainer}>
                                         {item.genres && (
@@ -53,29 +51,31 @@ export default function MovieList({ data }) {
                             </View>
                         </Link>
                     ) : null
-                )}
+                }
             />
         </View>
     );
 }
 const styles = StyleSheet.create({
-
+    container: {
+        flex: 1,
+    },
+    flatListContainer: {
+        flexGrow: 1
+    },
     movieItem: {
         flexDirection: "row",
         padding: 16,
-     
     },
     movieItemTextContainer: {
         flexDirection: "column",
         justifyContent: "center",
         maxWidth: "60%",
-
     },
     lowerContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "top",
-
     },
     labels: {
         width: "auto",

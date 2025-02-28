@@ -18,7 +18,7 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.safeAreaView}>
     <CustomText variant="display" align="left" style={styles.title}>Favorites</CustomText>
-    <MovieList data={favorites.favorites}/>
+    <MovieList data={favorites.favorites} style={styles.favorites}/>
     </SafeAreaView>
   );
 }
@@ -26,6 +26,10 @@ export default function Index() {
 const styles = StyleSheet.create({
   safeAreaView: {
     backgroundColor: '#fff',
+    flex: 1,
+  },
+  favorites: {
+    flexGrow: 1,
   },
   title: {
     paddingLeft: 10,
