@@ -13,7 +13,7 @@ export default function HomeLayout() {
         },
         {
             name: "favourites/index",
-            title: "favourites",
+            title: "Favourites",
             icon: "heart-outline"
         },
         {
