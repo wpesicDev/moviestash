@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
         alignItems: "center", 
         flex: 1, 
         marginRight: 8, 
+        padding: 8,
     },
     movieImage: {
         width: 100,
