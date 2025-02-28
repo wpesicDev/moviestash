@@ -49,7 +49,18 @@ export default function Index() {
       Alert.alert('Success', 'All data has been cleared successfully.');
     } catch (error) {
       console.error('Error clearing data:', error);
-      Alert.alert('Error', 'Failed to clear data. Please try again.');
+
+      const errorMessage = error.toString().toLowerCase();
+      if (errorMessage.includes("no such file or directory") ||
+        errorMessage.includes("couldn't be removed")) {
+        console.log("Storage already cleared or not found - considering operation successful");
+        Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success
+        );
+        Alert.alert('Success', 'All data has been cleared successfully.');
+      } else {
+        Alert.alert('Error', 'Failed to clear data. Please try again.');
+      }
     }
   };
 
@@ -60,8 +71,8 @@ export default function Index() {
   return (
     <ScrollView style={[styles.container, isDarkMode && styles.darkContainer]}>
       <View style={styles.header}>
-        <Image 
-          source={require('../../../assets/icon.png')} 
+        <Image
+          source={require('../../../assets/icon.png')}
           style={styles.icon}
           resizeMode="contain"
         />
@@ -77,7 +88,7 @@ export default function Index() {
         <CustomText variant="headline" color={isDarkMode ? '#FFFFFF' : '#000000'}>
           Appearance
         </CustomText>
-        
+
         <TouchableOpacity style={styles.settingItem} onPress={darkModeComingSoon}>
           <View style={styles.settingTextContainer}>
             <Ionicons name="moon-outline" size={24} color={isDarkMode ? '#FFFFFF' : '#000000'} />
@@ -92,9 +103,9 @@ export default function Index() {
         <CustomText variant="headline" color={isDarkMode ? '#FFFFFF' : '#000000'}>
           Data
         </CustomText>
-        
-        <TouchableOpacity 
-          style={[styles.settingItem, styles.dangerButton]} 
+
+        <TouchableOpacity
+          style={[styles.settingItem, styles.dangerButton]}
           onPress={confirmClearData}
         >
           <View style={styles.settingTextContainer}>
