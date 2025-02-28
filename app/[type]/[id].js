@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, ScrollView, TouchableOpacity, Vibration } from 'react-native';
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router';
 import useTMDB from '../../hooks/useTMDB';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomText from '../../components/customText';
 import RatingContainer from '../../components/ratingContainer';
+import * as Haptics from 'expo-haptics';
 
 export default function MovieDetail() {
   const { id, type } = useLocalSearchParams();
@@ -24,6 +25,7 @@ export default function MovieDetail() {
   };
 
   const toggleFavorite = async () => {
+    
     console.log(movieDetails)
     try {
       const currentMovie = {
@@ -46,10 +48,16 @@ export default function MovieDetail() {
       if (index === -1) {
         favoritesOBJ.push(currentMovie);
         setFavouriteIcon("heart");
+        Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success
+        )
         console.log("Added to favorites: ", currentMovie);
       } else {
         favoritesOBJ.splice(index, 1);
         setFavouriteIcon("heart-outline");
+        Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Warning
+        )
         console.log("Removed from favorites");
       }
 
