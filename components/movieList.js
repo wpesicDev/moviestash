@@ -11,53 +11,51 @@ export default function MovieList({ data }) {
                 data={data}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <View style={styles.movieItem}>
-                        <Image
-                            source={{
-                                uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-                            }}
-                            style={{
-                                width: 100,
-                                height: 150,
-                                borderRadius: 8,
-                                marginRight: 16,
-                            }}
-                            transition={300}
-                        />
-                        <View style={styles.movieItemTextContainer}>
-                            <CustomText
-                                variant="title"
-                                numberOfLines={2}
-                            >{item.title ?? item.name}</CustomText>
-                            <CustomText color='grey' >
-                                {item.tagline}
-                            </CustomText>
-                            <RatingContainer item={item} style={styles.ratingContainer} />
-                            <View style={styles.lowerContainer}>
-                                {item.genres && (
-                                    <View style={styles.genreContainer}>
-                                        {item.genres.slice(0, 3).map((genre) => (
-                                            <CustomText key={genre} color="white" style={styles.labels}>
-                                                {genre}
-                                            </CustomText>
-                                        ))}
-                                    </View>
-                                )}
-
-                                <Ionicons name="heart" size={24} color={"#FF0000"} />
+                    item.poster_path ? (
+                        <View style={styles.movieItem}>
+                            <Image
+                                source={{
+                                    uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+                                }}
+                                style={{
+                                    width: 100,
+                                    height: 150,
+                                    borderRadius: 8,
+                                    marginRight: 16,
+                                }}
+                                transition={300}
+                            />
+                            <View style={styles.movieItemTextContainer}>
+                                <CustomText
+                                    variant="title"
+                                    numberOfLines={2}
+                                >{item.title ?? item.name}</CustomText>
+                                <CustomText color='grey'>
+                                    {item.tagline}
+                                </CustomText>
+                                <RatingContainer item={item} style={styles.ratingContainer} />
+                                <View style={styles.lowerContainer}>
+                                    {item.genres && (
+                                        <View style={styles.genreContainer}>
+                                            {item.genres.slice(0, 3).map((genre) => (
+                                                <CustomText key={genre} color="white" style={styles.labels}>
+                                                    {genre}
+                                                </CustomText>
+                                            ))}
+                                        </View>
+                                    )}
+                                    <Ionicons name="heart" size={24} color={"#FF0000"} />
+                                </View>
                             </View>
                         </View>
-                    </View>
+                    ) : null
                 )}
             />
         </View>
     );
 }
 const styles = StyleSheet.create({
-    container: {
-        padding: 10,
-        paddingBottom: 100,
-    },
+
     movieItem: {
         flexDirection: "row",
         paddingTop: 16,

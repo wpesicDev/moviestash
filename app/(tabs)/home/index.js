@@ -45,9 +45,8 @@ export default function Index() {
   if (error) return <Text>Error: {error.message}</Text>;
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <CustomText variant="display" align="left" style={styles.title}>Search</CustomText>
+      <CustomText variant="display" align="left" style={styles.title}>Home</CustomText>
       <ScrollView contentContainerStyle={styles.container}>
-      <CustomText variant="display" align="left">Home</CustomText>
         <TextInput
           style={styles.input}
           onChangeText={setSearch}
@@ -56,18 +55,25 @@ export default function Index() {
           returnKeyType={'done'}
         />
 
-        {(() => {
+{(() => {
           if (search !== '' && search.length >= 3) {
-            return (
-              <>
-                <MovieList data={data.search?.results}/>
-              </>
-            );
+            if (data.search?.results?.length > 0) {
+              return (
+                <>
+                  <MovieList data={data.search?.results} />
+                </>
+              );
+            } else {
+              return (
+                <>
+                  <Text>No results found</Text>
+                </>
+              );
+            }
           } else if (search !== '' && search.length < 3) {
             return (
               <>
                 <Text>Search with at least 3 characters</Text>
-
               </>
             );
           } else {
@@ -85,6 +91,7 @@ export default function Index() {
             );
           }
         })()}
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -96,7 +103,7 @@ const styles = StyleSheet.create({
     borderRadius: 99,
     borderColor: '#ddd',
     marginBottom: 20,
-    marginTop: -10,
+    marginTop: 40,
     borderWidth: 1,
     padding: 10,
   },
