@@ -4,25 +4,59 @@ import { useLocalSearchParams, useNavigation } from 'expo-router';
 import useTMDB from '../../hooks/useTMDB';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import {AsyncStorage} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function MovieDetail() {
   const { id, type } = useLocalSearchParams();
   const { data, getMovieDetails, getShowDetails } = useTMDB();
   const [localLoading, setLocalLoading] = useState(true);
   const [localError, setLocalError] = useState(null);
+  const [favoriteIcon, setFavouriteIcon] = useState(false);
   const navigation = useNavigation();
 
-  const storeFavorite = async (id) => {
+  const checkFavoriteStatus = async () => {
+    const favorites = await AsyncStorage.getItem('favourites');
+    const favoritesOBJ = favorites ? JSON.parse(favorites) : [];
+    const isFavorite = favoritesOBJ.some(movie => movie.id === movieDetails.id);
+    console.log("favoriteobj: ", favoritesOBJ);
+    setFavouriteIcon(isFavorite ? "heart" : "heart-outline");
+  };
+
+  const toggleFavorite = async () => {
     try {
-      await AsyncStorage.setItem(
-        'favoriteId:' + id,
-        'I like to save it.',
-      );
+      const currentMovie = {
+        id: movieDetails.id, 
+        title: movieDetails.title, 
+        poster_path: movieDetails.poster_path, 
+        genres: movieDetails.genres, 
+        tagline: movieDetails.tagline
+      };
+  
+      // Retrieve the current list of favorites from AsyncStorage
+      const favorites = await AsyncStorage.getItem('favourites');
+      let favoritesOBJ = favorites ? JSON.parse(favorites) : [];
+  
+      // Check if the movie is already in favorites
+      const index = favoritesOBJ.findIndex(movie => movie.id === currentMovie.id);
+  
+      if (index === -1) { // Not in favorites, add it
+        favoritesOBJ.push(currentMovie);
+        setFavouriteIcon("heart");
+        console.log("Added to favorites: ", currentMovie);
+      } else { 
+        favoritesOBJ.splice(index, 1);
+        setFavouriteIcon("heart-outline");
+        console.log("Removed from favorites");
+      }
+  
+      await AsyncStorage.setItem('favourites', JSON.stringify(favoritesOBJ));
+      console.log("Updated favorites: ", favoritesOBJ);
     } catch (error) {
-      console.log("Error saving data: ", error);
+      console.error("Error updating favorites: ", error);
     }
   };
+  
 
   // Set header options initially to prevent flickering
   useEffect(() => {
@@ -54,6 +88,9 @@ export default function MovieDetail() {
       fetchDetails();
     } else {
       setLocalLoading(false);
+    }
+    if (id && movieDetails) {
+      checkFavoriteStatus();
     }
   }, [id, data, getMovieDetails, getShowDetails, type]);
 
@@ -141,7 +178,12 @@ export default function MovieDetail() {
       </View>
       <Text>{movieDetails.overview}</Text>
       <Text>Movie ID: {id}</Text>
-      <Ionicons name="heart-outline" size={24} color={"#FF0000"}/> 
+      <Ionicons 
+        name={favoriteIcon} 
+        size={24} 
+      color={"#FF0000"} 
+      onPress={toggleFavorite}
+    />
     </SafeAreaView>
   );
 }

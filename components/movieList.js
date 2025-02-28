@@ -1,4 +1,4 @@
-import { View, FlatList, Image, StyleSheet } from "react-native";
+import { View, FlatList, Image, StyleSheet, SafeAreaView } from "react-native";
 import CustomText from "./customText";
 import RatingContainer from "./ratingContainer";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,7 +7,7 @@ import { Link } from 'expo-router';
 
 export default function MovieList({ data }) {
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <FlatList
                 contentContainerStyle={styles.flatListContainer}
                 horizontal={false}
@@ -54,7 +54,7 @@ export default function MovieList({ data }) {
                     ) : null
                 }
             />
-        </View>
+        </SafeAreaView>
     );
 }
 const styles = StyleSheet.create({
@@ -63,7 +63,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10, 
+        paddingHorizontal: 10, 
+        maxHeight: "100%",
     }, 
 
     movieItem: {
@@ -73,6 +74,7 @@ const styles = StyleSheet.create({
     flatListContainer:{
         flexGrow: 1,
         marginBottom: "10",
+        padding: 10,
     },
     movieItemTextContainer: {
         flexDirection: "column",
@@ -100,3 +102,5 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
     },
 });
+
+

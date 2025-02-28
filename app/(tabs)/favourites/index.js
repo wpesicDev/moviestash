@@ -25,6 +25,7 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   safeAreaView: {
+    paddingHorizontal: 10,
     backgroundColor: '#fff',
     flex: 1,
   },
