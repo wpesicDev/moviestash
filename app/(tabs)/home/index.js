@@ -6,6 +6,7 @@ import MovieSlider from '../../../components/movieSlider';
 import CustomText from '../../../components/customText';
 import { useNavigation } from '@react-navigation/native';
 import MovieList from '../../../components/movieList';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Index() {
   const [search, setSearch] = useState('');

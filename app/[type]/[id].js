@@ -19,7 +19,6 @@ export default function MovieDetail() {
     const favorites = await AsyncStorage.getItem('favourites');
     const favoritesOBJ = favorites ? JSON.parse(favorites) : [];
     const isFavorite = favoritesOBJ.some(movie => movie.id === movieDetails.id);
-    console.log("favoriteobj: ", favoritesOBJ);
     setFavouriteIcon(isFavorite ? "heart" : "heart-outline");
   };
 
@@ -27,7 +26,8 @@ export default function MovieDetail() {
     try {
       const currentMovie = {
         id: movieDetails.id, 
-        title: movieDetails.title, 
+        title: movieDetails.title,
+        name: movieDetails.name, 
         poster_path: movieDetails.poster_path, 
         genres: movieDetails.genres, 
         tagline: movieDetails.tagline

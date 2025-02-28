@@ -16,7 +16,7 @@ export default function MovieList({ data }) {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) =>
                     item.poster_path ? (
-                        <Link push href={`/${item.title ? 'movie' : 'show'}/${item.id}`}>
+                        <Link push href={`/${item.title ? 'movie': 'show'}/${item.id}`}>
                             <View style={styles.movieItem}>
                                 <Image
                                     source={{
@@ -36,7 +36,7 @@ export default function MovieList({ data }) {
                                     </CustomText>
                                     <CustomText color="grey">{item.tagline}</CustomText>
                                     <RatingContainer item={item} style={styles.ratingContainer} />
-                                    <View style={styles.lowerContainer}>
+                                    {/* <View style={styles.lowerContainer}>
                                         {item.genres && (
                                             <View style={styles.genreContainer}>
                                                 {item.genres.slice(0, 3).map((genre) => (
@@ -47,7 +47,7 @@ export default function MovieList({ data }) {
                                             </View>
                                         )}
                                         <Ionicons name="heart" size={24} color={"#FF0000"} />
-                                    </View>
+                                    </View> */}
                                 </View>
                             </View>
                         </Link>
