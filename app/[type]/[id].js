@@ -32,17 +32,18 @@ export default function MovieDetail() {
         name: movieDetails.name,
         poster_path: movieDetails.poster_path,
         genres: movieDetails.genres,
-        tagline: movieDetails.tagline
+        tagline: movieDetails.tagline,
+        genres: movieDetails.genres,
+        overview: movieDetails.overview,
+        vote_average: movieDetails.vote_average,
       };
 
-      // Retrieve the current list of favorites from AsyncStorage
       const favorites = await AsyncStorage.getItem('favourites');
       let favoritesOBJ = favorites ? JSON.parse(favorites) : [];
-
-      // Check if the movie is already in favorites
+  
       const index = favoritesOBJ.findIndex(movie => movie.id === currentMovie.id);
-
-      if (index === -1) { // Not in favorites, add it
+  
+      if (index === -1) {
         favoritesOBJ.push(currentMovie);
         setFavouriteIcon("heart");
         console.log("Added to favorites: ", currentMovie);
@@ -60,7 +61,6 @@ export default function MovieDetail() {
   };
 
 
-  // Set header options initially to prevent flickering
   useEffect(() => {
     const initialTitle = type === 'movie' ? 'Movie Details' : 'TV Show Details';
     navigation.setOptions({
@@ -98,7 +98,6 @@ export default function MovieDetail() {
 
   const movieDetails = data?.movieDetails?.[id];
 
-  // Update header title when movieDetails is available
   useEffect(() => {
     if (movieDetails?.title || movieDetails?.name) {
       navigation.setOptions({
@@ -177,7 +176,7 @@ export default function MovieDetail() {
               {movieDetails.title ?? movieDetails.name}
             </Text>
             <Text style={{ fontSize: 15, color: 'grey', opacity: 0.8 }}>
-              {movieDetails.tagline}
+              {`${movieDetails.tagline.substring(0, 27)}...`}
             </Text>
           </View>
         </View>

@@ -1,4 +1,5 @@
-import { View, FlatList, Image, StyleSheet, SafeAreaView } from "react-native";
+import { View, FlatList, Image, StyleSheet, SafeAreaView, } from "react-native";
+import { useState, useEffect } from "react";
 import CustomText from "./customText";
 import RatingContainer from "./ratingContainer";
 import { Ionicons } from "@expo/vector-icons";
@@ -6,6 +7,52 @@ import { Link } from 'expo-router';
 
 
 export default function MovieList({ data }) {
+    const [favoriteIcon, setFavouriteIcon] = useState(false);
+
+    const checkFavoriteStatus = async () => {
+        const favorites = await AsyncStorage.getItem('favourites');
+        const favoritesOBJ = favorites ? JSON.parse(favorites) : [];
+        const isFavorite = favoritesOBJ.some(movie => movie.id === movieDetails.id);
+        setFavouriteIcon(isFavorite ? "heart" : "heart-outline");
+    };
+
+    const toggleFavorite = async () => {
+        try {
+            const currentMovie = {
+                id: movieDetails.id,
+                title: movieDetails.title,
+                name: movieDetails.name,
+                poster_path: movieDetails.poster_path,
+                genres: movieDetails.genres,
+                tagline: movieDetails.tagline,
+                genres: movieDetails.genres,
+                overview: movieDetails.overview,
+                vote_average: movieDetails.vote_average,
+            };
+
+            const favorites = await AsyncStorage.getItem('favourites');
+            let favoritesOBJ = favorites ? JSON.parse(favorites) : [];
+
+            const index = favoritesOBJ.findIndex(movie => movie.id === currentMovie.id);
+
+            if (index === -1) {
+                favoritesOBJ.push(currentMovie);
+                setFavouriteIcon("heart");
+                console.log("Added to favorites: ", currentMovie);
+            } else {
+                favoritesOBJ.splice(index, 1);
+                setFavouriteIcon("heart-outline");
+                console.log("Removed from favorites");
+            }
+
+            await AsyncStorage.setItem('favourites', JSON.stringify(favoritesOBJ));
+            console.log("Updated favorites: ", favoritesOBJ);
+        } catch (error) {
+            console.error("Error updating favorites: ", error);
+        }
+    };
+
+
     return (
         <SafeAreaView style={styles.container}>
             <FlatList
@@ -16,7 +63,7 @@ export default function MovieList({ data }) {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) =>
                     item.poster_path ? (
-                        <Link push href={`/${item.title ? 'movie': 'show'}/${item.id}`}>
+                        <Link push href={`/${item.title ? 'movie' : 'show'}/${item.id}`}>
                             <View style={styles.movieItem}>
                                 <Image
                                     source={{
@@ -34,20 +81,32 @@ export default function MovieList({ data }) {
                                     <CustomText variant="title" numberOfLines={2}>
                                         {item.title ?? item.name}
                                     </CustomText>
-                                    <CustomText color="grey">{item.tagline}</CustomText>
+                                    <CustomText
+                                        color="grey"
+                                        numberOfLines={1}
+                                        style={styles.tagline}
+                                    >
+                                        {item.tagline ? item.tagline : (item.overview ? `${item.overview.substring(0, 35)}...` : 'No Description')}
+                                    </CustomText>
                                     <RatingContainer item={item} style={styles.ratingContainer} />
-                                    {/* <View style={styles.lowerContainer}>
-                                        {item.genres && (
+                                    <View style={styles.lowerContainer}>
+                                        {item.genres && item.genres.length > 0 && (
                                             <View style={styles.genreContainer}>
-                                                {item.genres.slice(0, 3).map((genre) => (
-                                                    <CustomText key={genre} color="white" style={styles.labels}>
-                                                        {genre}
+                                                {item.genres.slice(0, 2).map((genre, index) => (
+                                                    <CustomText key={genre.id} color="white" style={styles.labels}>
+                                                        {genre.name}
                                                     </CustomText>
                                                 ))}
                                             </View>
                                         )}
-                                        <Ionicons name="heart" size={24} color={"#FF0000"} />
-                                    </View> */}
+
+                                        <Ionicons
+                                            name="heart"
+                                            size={24}
+                                            color={"#FF0000"}
+                                            onPress={toggleFavorite}
+                                        />
+                                    </View>
                                 </View>
                             </View>
                         </Link>
@@ -60,47 +119,47 @@ export default function MovieList({ data }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 10, 
-        maxHeight: "100%",
-    }, 
-
+        paddingHorizontal: 10,
+        width: "100%",
+    },
     movieItem: {
         flexDirection: "row",
-        
-    },
-    flatListContainer:{
-        flexGrow: 1,
-        marginBottom: "10",
+        width: "100%",
         padding: 10,
     },
+    flatListContainer: {
+        flexGrow: 1,
+        padding: 5,
+    },
     movieItemTextContainer: {
+        flex: 1,
         flexDirection: "column",
         justifyContent: "center",
-        maxWidth: "70%",
-        paddingBottom: "30",
+        padding: 10,
     },
     lowerContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "top",
+        alignItems: "flex-start",
+        width: "100%",
     },
     labels: {
-        width: "auto",
         backgroundColor: "#8e8e93",
         padding: 4,
+        width: "auto",
         borderRadius: 5,
     },
     genreContainer: {
-        display: "flex",
         flexDirection: "row",
+        flexWrap: 'wrap',
         gap: 5,
     },
     ratingContainer: {
         paddingBottom: 10,
     },
 });
+
 
 
