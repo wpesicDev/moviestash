@@ -4,6 +4,7 @@ import RatingContainer from "./ratingContainer";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from 'expo-router';
 
+
 export default function MovieList({ data }) {
     return (
         <View style={styles.container}>
@@ -59,18 +60,25 @@ export default function MovieList({ data }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    },
-    flatListContainer: {
-        flexGrow: 1
-    },
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10, 
+    }, 
+
     movieItem: {
         flexDirection: "row",
-        padding: 16,
+        
+    },
+    flatListContainer:{
+        flexGrow: 1,
+        marginBottom: "10",
     },
     movieItemTextContainer: {
         flexDirection: "column",
         justifyContent: "center",
-        maxWidth: "60%",
+        maxWidth: "70%",
+        paddingBottom: "30",
     },
     lowerContainer: {
         flexDirection: "row",
