@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
 
     movieItem: {
         flexDirection: "row",
-        paddingTop: 16,
-        paddingBottom: 16,
+        padding: 16,
+     
     },
     movieItemTextContainer: {
         flexDirection: "column",
