@@ -114,6 +114,7 @@ export default function MovieDetail() {
   }, [id, data, getMovieDetails, getShowDetails, type]);
 
   const movieDetails = data?.movieDetails?.[id];
+  console.log(movieDetails)
 
   useEffect(() => {
     if (movieDetails?.title || movieDetails?.name) {
@@ -199,9 +200,14 @@ export default function MovieDetail() {
 
         <View style={styles.infoContainer}>
           {movieDetails.original_language && (
-            <Text style={styles.infoText}>
-              Language: {movieDetails.original_language}
-            </Text>
+            <>
+              <Text style={styles.infoText}>
+                {movieDetails.release_date.split('-').reverse().join('.')}
+              </Text>
+              <Text style={styles.infoText}>
+                Language: {movieDetails.original_language}
+              </Text>
+            </>
           )}
 
           <Text style={styles.overview}>{movieDetails.overview}</Text>
@@ -231,8 +237,8 @@ export default function MovieDetail() {
                     source={
                       item.logo_path
                         ? {
-                            uri: `https://image.tmdb.org/t/p/w300${item.logo_path}`,
-                          }
+                          uri: `https://image.tmdb.org/t/p/w300${item.logo_path}`,
+                        }
                         : require("../../assets/production-placeholder.png")
                     }
                     style={styles.prodImage}
@@ -263,8 +269,8 @@ export default function MovieDetail() {
                     source={
                       item.profile_path
                         ? {
-                            uri: `https://image.tmdb.org/t/p/w300${item.profile_path}`,
-                          }
+                          uri: `https://image.tmdb.org/t/p/w300${item.profile_path}`,
+                        }
                         : require("../../assets/profile-placeholder.png")
                     }
                     style={styles.castImage}
