@@ -55,7 +55,6 @@ export default function Index() {
       headerBackTitleVisible: false,
     });
   }, []);
-  if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
   return (
     <SafeAreaView style={styles.safeAreaView}>
