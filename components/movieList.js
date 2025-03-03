@@ -8,53 +8,46 @@ import { Link } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 export default function MovieList({ data }) {
-    const [favoriteIcon, setFavouriteIcon] = useState(false);
+    const [favoriteIcons, setFavoriteIcons] = useState({});
 
     useEffect(() => {
-        const checkFavoriteStatus = async (movieDetails) => {
+        const checkFavoriteStatus = async () => {
             const favorites = await AsyncStorage.getItem('favourites');
             const favoritesOBJ = favorites ? JSON.parse(favorites) : [];
-            const isFavorite = favoritesOBJ.some(movie => movie.id === movieDetails.id);
-            setFavouriteIcon(isFavorite ? "heart" : "heart-outline");
+
+            const newFavoritesState = {};
+            data.forEach(movie => {
+                newFavoritesState[movie.id] = favoritesOBJ.some(fav => fav.id === movie.id) ? "heart" : "heart-outline";
+            });
+
+            setFavoriteIcons(newFavoritesState);
         };
 
         if (data.length > 0) {
-            checkFavoriteStatus(data[0]); 
+            checkFavoriteStatus();
         }
     }, [data]);
 
     const toggleFavorite = async (movieDetails) => {
         try {
-            const currentMovie = {
-                id: movieDetails.id,
-                title: movieDetails.title,
-                name: movieDetails.name,
-                poster_path: movieDetails.poster_path,
-                genres: movieDetails.genres,
-                tagline: movieDetails.tagline,
-                overview: movieDetails.overview,
-                vote_average: movieDetails.vote_average,
-            };
-
             const favorites = await AsyncStorage.getItem('favourites');
             let favoritesOBJ = favorites ? JSON.parse(favorites) : [];
 
-            const index = favoritesOBJ.findIndex(movie => movie.id === currentMovie.id);
+            const index = favoritesOBJ.findIndex(movie => movie.id === movieDetails.id);
+            let updatedFavorites;
+            let newFavoriteIcons = { ...favoriteIcons };
 
             if (index === -1) {
-                favoritesOBJ.push(currentMovie);
-                Haptics.notificationAsync(
-                    Haptics.NotificationFeedbackType.Success
-                )
-                setFavouriteIcon("heart");
+                favoritesOBJ.push(movieDetails);
+                newFavoriteIcons[movieDetails.id] = "heart";
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             } else {
                 favoritesOBJ.splice(index, 1);
-                Haptics.notificationAsync(
-                    Haptics.NotificationFeedbackType.Warning
-                 )
-                setFavouriteIcon("heart-outline");
+                newFavoriteIcons[movieDetails.id] = "heart-outline";
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
             }
 
+            setFavoriteIcons(newFavoriteIcons);
             await AsyncStorage.setItem('favourites', JSON.stringify(favoritesOBJ));
         } catch (error) {
             console.error("Error updating favorites: ", error);
@@ -63,50 +56,46 @@ export default function MovieList({ data }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <FlatList
-                contentContainerStyle={styles.flatListContainer}
-                horizontal={false}
-                showsHorizontalScrollIndicator={false}
-                data={data}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.listItemContainer}>
-                        <Link push href={`/${item.title ? 'movie' : 'show'}/${item.id}`}>
-                            <View style={styles.movieItem}>
-                                <Image
-                                    source={{
-                                        uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-                                    }}
-                                    style={styles.movieImage}
-                                />
-                                <View style={styles.movieItemTextContainer}>
-                                    <CustomText variant="title" numberOfLines={2}>
-                                        {item.title ?? item.name}
-                                    </CustomText>
-                                    <CustomText
-                                        color="grey"
-                                        numberOfLines={1}
-                                        style={styles.tagline}
-                                    >
-                                        {item.tagline ? item.tagline : (item.overview ? `${item.overview.substring(0, 35)}...` : 'No Description')}
-                                    </CustomText>
-                                    <RatingContainer item={item} style={styles.ratingContainer} />
-                                    <View style={styles.genreContainer}>
-                                        {item.genres && item.genres.splice(0, 2).map((genre, index) => (
-                                            <CustomText key={genre.id} color="white" style={styles.labels}>
-                                                {genre.name}
-                                            </CustomText>
-                                        ))}
+            <View>
+                <FlatList
+                    contentContainerStyle={styles.flatListContainer}
+                    horizontal={false}
+                    showsHorizontalScrollIndicator={false}
+                    data={data}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => (
+                        <View style={styles.listItemContainer}>
+                            <Link push href={`/${item.title ? 'movie' : 'show'}/${item.id}`}>
+                                <View style={styles.movieItem}>
+                                    <Image
+                                        source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }}
+                                        style={styles.movieImage}
+                                    />
+                                    <View style={styles.movieItemTextContainer}>
+                                        <CustomText variant="title" numberOfLines={2}>
+                                            {item.title ?? item.name}
+                                        </CustomText>
+                                        <CustomText color="grey" numberOfLines={1} style={styles.tagline}>
+                                            {item.tagline ? item.tagline : (item.overview ? `${item.overview.substring(0, 35)}...` : 'No Description')}
+                                        </CustomText>
+                                        <RatingContainer item={item} style={styles.ratingContainer} />
+                                        <View style={styles.genreContainer}>
+                                            {item.genres && item.genres.slice(0, 2).map((genre) => (
+                                                <CustomText key={genre.id} color="white" style={styles.labels}>
+                                                    {genre.name}
+                                                </CustomText>
+                                            ))}
+                                        </View>
                                     </View>
                                 </View>
-                            </View>
-                        </Link>
-                        <TouchableOpacity onPress={() => toggleFavorite(item)}>
-                            <Ionicons name={favoriteIcon} size={24} color={"#FF0000"} />
-                        </TouchableOpacity>
-                    </View>
-                )}
-            />
+                            </Link>
+                            <TouchableOpacity onPress={() => toggleFavorite(item)}>
+                                <Ionicons name={favoriteIcons[item.id] || "heart-outline"} size={24} color={"#FF0000"} />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                />
+            </View>
         </SafeAreaView>
     );
 }
