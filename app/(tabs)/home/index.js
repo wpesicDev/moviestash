@@ -83,7 +83,6 @@ export default function Index() {
               return (
                 <View>
                   <MovieList data={data.search?.results} />
-                  {console.log("searchresults:", data.search?.results)}
                 </View>
               );
             } else {

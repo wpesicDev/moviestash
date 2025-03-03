@@ -47,7 +47,6 @@ export default function MovieList({ data }) {
       const index = favoritesOBJ.findIndex(
         (movie) => movie.id === movieDetails.id,
       );
-      let updatedFavorites;
       let newFavoriteIcons = { ...favoriteIcons };
 
       if (index === -1) {
@@ -74,7 +73,7 @@ export default function MovieList({ data }) {
           contentContainerStyle={styles.flatListContainer}
           horizontal={false}
           showsHorizontalScrollIndicator={false}
-          data={data}
+          data={data.filter(item => item.poster_path)}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={styles.listItemContainer}>
