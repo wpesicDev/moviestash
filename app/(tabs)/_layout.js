@@ -18,8 +18,8 @@ export default function HomeLayout() {
         },
         {
             name: "settings/index",
-            title: "Profile",
-            icon: "person-outline"
+            title: "Settings",
+            icon: "settings-outline"
         },
     ]
     return (
