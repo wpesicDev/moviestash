@@ -1,13 +1,13 @@
-import { StyleSheet, SafeAreaView, View } from 'react-native';
-import { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import CustomText from '../../../components/customText';
-import MovieList from '../../../components/movieList';
-import { useNavigation } from 'expo-router';
+import { StyleSheet, SafeAreaView, View } from "react-native";
+import { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomText from "../../../components/customText";
+import MovieList from "../../../components/movieList";
+import { useNavigation } from "expo-router";
 
 const getFavourites = async () => {
   try {
-    const favorites = await AsyncStorage.getItem('favourites');
+    const favorites = await AsyncStorage.getItem("favourites");
     return favorites ? JSON.parse(favorites) : [];
   } catch (error) {
     console.error("Error updating favorites: ", error);
@@ -24,7 +24,7 @@ export default function Index() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: '',
+      headerTitle: "",
       headerShadowVisible: false,
       headerBackTitleVisible: false,
     });
@@ -32,10 +32,14 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <CustomText variant="display" align="left" style={styles.title}>Favourites</CustomText>
+      <CustomText variant="display" align="left" style={styles.title}>
+        Favourites
+      </CustomText>
       {favourites.length === 0 ? (
         <View style={styles.centerMessage}>
-          <CustomText style={styles.noFavoritesText}>No movies favourited</CustomText>
+          <CustomText style={styles.noFavoritesText}>
+            No movies favourited
+          </CustomText>
         </View>
       ) : (
         <MovieList data={favourites} style={styles.favorites} />
@@ -47,7 +51,7 @@ export default function Index() {
 const styles = StyleSheet.create({
   safeAreaView: {
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     flex: 1,
   },
   favorites: {
@@ -58,14 +62,14 @@ const styles = StyleSheet.create({
   },
   centerMessage: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     width: "100%",
   },
   noFavoritesText: {
     width: "100%",
     textAlign: "center",
     fontSize: 18,
-    color: 'grey',
+    color: "grey",
   },
 });

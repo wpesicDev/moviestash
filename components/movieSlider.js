@@ -1,9 +1,9 @@
-import { FlatList } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image } from 'react-native';
-import { Link } from 'expo-router';
-import Ionicons from "@expo/vector-icons/Ionicons"
-import RatingContainer from './ratingContainer';
+import { FlatList } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, Image } from "react-native";
+import { Link } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import RatingContainer from "./ratingContainer";
 
 export default function MovieSlider(props) {
   return (
@@ -15,17 +15,17 @@ export default function MovieSlider(props) {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.movieItem}>
-            <Link push href={`/${item.title ? 'movie': 'show'}/${item.id}`}>
+            <Link push href={`/${item.title ? "movie" : "show"}/${item.id}`}>
               <Image
                 source={{
-                  uri: `https://image.tmdb.org/t/p/w300${item.poster_path}`
+                  uri: `https://image.tmdb.org/t/p/w300${item.poster_path}`,
                 }}
                 style={{ borderRadius: 12, width: "100%", height: "100%" }}
                 transition={200}
               />
             </Link>
             <Text>{item.title ?? item.name}</Text>
-            <RatingContainer item={item}/>
+            <RatingContainer item={item} />
           </View>
         )}
         ItemSeparatorComponent={() => <View style={styles.seperator} />}
@@ -39,24 +39,24 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     maxHeight: 300,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
   },
   item: {
     marginBottom: 20,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: "#ddd",
   },
   image: {
     width: 150,
     height: 225,
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginVertical: 5,
   },
   seperator: {
@@ -65,6 +65,5 @@ const styles = StyleSheet.create({
   movieItem: {
     height: 200,
     width: 130,
-  }
+  },
 });
-

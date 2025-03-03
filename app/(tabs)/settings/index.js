@@ -1,21 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Image, Alert, TouchableOpacity, ScrollView } from 'react-native';
-import { useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import CustomText from '../../../components/customText';
-import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
-import { useNavigation } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Alert,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomText from "../../../components/customText";
+import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
+import { useNavigation } from "expo-router";
+import { useColorScheme } from "react-native";
 
 export default function Index() {
   const navigation = useNavigation();
   const theme = useColorScheme();
-  const isDarkMode = theme === 'dark';
+  const isDarkMode = theme === "dark";
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: '',
+      headerTitle: "",
       headerShadowVisible: false,
       headerBackTitleVisible: false,
     });
@@ -23,76 +30,101 @@ export default function Index() {
 
   const confirmClearData = () => {
     Alert.alert(
-      'Clear All Data',
-      'Are you sure you want to clear all app data? This action cannot be undone.',
+      "Clear All Data",
+      "Are you sure you want to clear all app data? This action cannot be undone.",
       [
         {
-          text: 'Cancel',
-          style: 'cancel',
+          text: "Cancel",
+          style: "cancel",
         },
         {
-          text: 'Clear',
+          text: "Clear",
           onPress: clearAllData,
-          style: 'destructive',
+          style: "destructive",
         },
       ],
-      { cancelable: true }
+      { cancelable: true },
     );
   };
 
   const clearAllData = async () => {
     try {
       await AsyncStorage.clear();
-      Haptics.notificationAsync(
-        Haptics.NotificationFeedbackType.Success
-      );
-      Alert.alert('Success', 'All data has been cleared successfully.');
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert("Success", "All data has been cleared successfully.");
     } catch (error) {
-      console.error('Error clearing data:', error);
+      console.error("Error clearing data:", error);
 
       const errorMessage = error.toString().toLowerCase();
-      if (errorMessage.includes("no such file or directory") ||
-        errorMessage.includes("couldn't be removed")) {
-        console.log("Storage already cleared or not found - considering operation successful");
-        Haptics.notificationAsync(
-          Haptics.NotificationFeedbackType.Success
+      if (
+        errorMessage.includes("no such file or directory") ||
+        errorMessage.includes("couldn't be removed")
+      ) {
+        console.log(
+          "Storage already cleared or not found - considering operation successful",
         );
-        Alert.alert('Success', 'All data has been cleared successfully.');
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        Alert.alert("Success", "All data has been cleared successfully.");
       } else {
-        Alert.alert('Error', 'Failed to clear data. Please try again.');
+        Alert.alert("Error", "Failed to clear data. Please try again.");
       }
     }
   };
 
   const darkModeComingSoon = () => {
-    Alert.alert('Coming Soon', 'Dark mode will be available in a future update.');
+    Alert.alert(
+      "Coming Soon",
+      "Dark mode will be available in a future update.",
+    );
   };
 
   return (
     <ScrollView style={[styles.container, isDarkMode && styles.darkContainer]}>
       <View style={styles.header}>
         <Image
-          source={require('../../../assets/icon.png')}
+          source={require("../../../assets/icon.png")}
           style={styles.icon}
           resizeMode="contain"
         />
-        <CustomText variant="title" align="center" color={isDarkMode ? '#FFFFFF' : '#000000'}>
+        <CustomText
+          variant="title"
+          align="center"
+          color={isDarkMode ? "#FFFFFF" : "#000000"}
+        >
           MovieStash
         </CustomText>
-        <CustomText variant="caption" align="center" color={isDarkMode ? '#CCCCCC' : '#666666'}>
+        <CustomText
+          variant="caption"
+          align="center"
+          color={isDarkMode ? "#CCCCCC" : "#666666"}
+        >
           Version 1.2.14
         </CustomText>
       </View>
 
       <View style={styles.settingsSection}>
-        <CustomText variant="headline" color={isDarkMode ? '#FFFFFF' : '#000000'}>
+        <CustomText
+          variant="headline"
+          color={isDarkMode ? "#FFFFFF" : "#000000"}
+        >
           Appearance
         </CustomText>
 
-        <TouchableOpacity style={styles.settingItem} onPress={darkModeComingSoon}>
+        <TouchableOpacity
+          style={styles.settingItem}
+          onPress={darkModeComingSoon}
+        >
           <View style={styles.settingTextContainer}>
-            <Ionicons name="moon-outline" size={24} color={isDarkMode ? '#FFFFFF' : '#000000'} />
-            <CustomText variant="body" color={isDarkMode ? '#FFFFFF' : '#000000'} style={styles.settingText}>
+            <Ionicons
+              name="moon-outline"
+              size={24}
+              color={isDarkMode ? "#FFFFFF" : "#000000"}
+            />
+            <CustomText
+              variant="body"
+              color={isDarkMode ? "#FFFFFF" : "#000000"}
+              style={styles.settingText}
+            >
               Dark Mode (Coming Soon)
             </CustomText>
           </View>
@@ -100,7 +132,10 @@ export default function Index() {
       </View>
 
       <View style={styles.settingsSection}>
-        <CustomText variant="headline" color={isDarkMode ? '#FFFFFF' : '#000000'}>
+        <CustomText
+          variant="headline"
+          color={isDarkMode ? "#FFFFFF" : "#000000"}
+        >
           Data
         </CustomText>
 
@@ -110,7 +145,11 @@ export default function Index() {
         >
           <View style={styles.settingTextContainer}>
             <Ionicons name="trash-outline" size={24} color="#FF3B30" />
-            <CustomText variant="body" color="#FF3B30" style={styles.settingText}>
+            <CustomText
+              variant="body"
+              color="#FF3B30"
+              style={styles.settingText}
+            >
               Clear All Data
             </CustomText>
           </View>
@@ -126,15 +165,15 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 16,
   },
   darkContainer: {
-    backgroundColor: '#121212',
+    backgroundColor: "#121212",
   },
   header: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 30,
     marginBottom: 40,
   },
@@ -147,22 +186,22 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   settingItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
+    borderBottomColor: "#EEEEEE",
   },
   settingTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   settingText: {
     marginLeft: 10,
     marginBottom: 0,
   },
   dangerButton: {
-    borderBottomColor: 'rgba(255, 59, 48, 0.2)',
+    borderBottomColor: "rgba(255, 59, 48, 0.2)",
   },
 });

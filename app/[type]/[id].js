@@ -1,15 +1,24 @@
-import { useEffect, useState } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, ScrollView, TouchableOpacity, Vibration } from 'react-native';
-import { Link, useLocalSearchParams, useNavigation } from 'expo-router';
-import useTMDB from '../../hooks/useTMDB';
+import { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Vibration,
+} from "react-native";
+import { Link, useLocalSearchParams, useNavigation } from "expo-router";
+import useTMDB from "../../hooks/useTMDB";
 import { ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import CustomText from '../../components/customText';
-import RatingContainer from '../../components/ratingContainer';
-import * as Haptics from 'expo-haptics';
-import * as WebBrowser from 'expo-web-browser';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomText from "../../components/customText";
+import RatingContainer from "../../components/ratingContainer";
+import * as Haptics from "expo-haptics";
+import * as WebBrowser from "expo-web-browser";
 
 export default function MovieDetail() {
   const { id, type } = useLocalSearchParams();
@@ -20,15 +29,16 @@ export default function MovieDetail() {
   const navigation = useNavigation();
 
   const checkFavoriteStatus = async () => {
-    const favorites = await AsyncStorage.getItem('favourites');
+    const favorites = await AsyncStorage.getItem("favourites");
     const favoritesOBJ = favorites ? JSON.parse(favorites) : [];
-    const isFavorite = favoritesOBJ.some(movie => movie.id === movieDetails.id);
+    const isFavorite = favoritesOBJ.some(
+      (movie) => movie.id === movieDetails.id,
+    );
     setFavouriteIcon(isFavorite ? "heart" : "heart-outline");
   };
 
   const toggleFavorite = async () => {
-
-    console.log(movieDetails)
+    console.log(movieDetails);
     try {
       const currentMovie = {
         id: movieDetails.id,
@@ -42,40 +52,37 @@ export default function MovieDetail() {
         vote_average: movieDetails.vote_average,
       };
 
-      const favorites = await AsyncStorage.getItem('favourites');
+      const favorites = await AsyncStorage.getItem("favourites");
       let favoritesOBJ = favorites ? JSON.parse(favorites) : [];
 
-      const index = favoritesOBJ.findIndex(movie => movie.id === currentMovie.id);
+      const index = favoritesOBJ.findIndex(
+        (movie) => movie.id === currentMovie.id,
+      );
 
       if (index === -1) {
         favoritesOBJ.push(currentMovie);
         setFavouriteIcon("heart");
-        Haptics.notificationAsync(
-          Haptics.NotificationFeedbackType.Success
-        )
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         console.log("Added to favorites: ", currentMovie);
       } else {
         favoritesOBJ.splice(index, 1);
         setFavouriteIcon("heart-outline");
-        Haptics.notificationAsync(
-          Haptics.NotificationFeedbackType.Warning
-        )
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
         console.log("Removed from favorites");
       }
 
-      await AsyncStorage.setItem('favourites', JSON.stringify(favoritesOBJ));
+      await AsyncStorage.setItem("favourites", JSON.stringify(favoritesOBJ));
       console.log("Updated favorites: ", favoritesOBJ);
     } catch (error) {
       console.error("Error updating favorites: ", error);
     }
   };
 
-
   useEffect(() => {
-    const initialTitle = type === 'movie' ? 'Movie Details' : 'TV Show Details';
+    const initialTitle = type === "movie" ? "Movie Details" : "TV Show Details";
     navigation.setOptions({
       title: initialTitle,
-      headerBlurEffect: 'regular',
+      headerBlurEffect: "regular",
       headerTransparent: true,
     });
   }, [type, navigation]);
@@ -86,9 +93,9 @@ export default function MovieDetail() {
         setLocalLoading(true);
         setLocalError(null);
         try {
-          if (type === 'movie') {
+          if (type === "movie") {
             await getMovieDetails(id);
-          } else if (type === 'show') {
+          } else if (type === "show") {
             await getShowDetails(id);
           }
         } catch (err) {
@@ -172,20 +179,19 @@ export default function MovieDetail() {
               style={{
                 fontSize: 24,
                 fontWeight: "bold",
-                color: 'grey',
+                color: "grey",
                 marginBottom: 8,
               }}
-            >
-            </Text>
+            ></Text>
 
             <RatingContainer item={movieDetails} />
             <Text
-              style={{ fontSize: 24, color: 'grey', fontWeight: 700 }}
+              style={{ fontSize: 24, color: "grey", fontWeight: 700 }}
               numberOfLines={2}
             >
               {movieDetails.title ?? movieDetails.name}
             </Text>
-            <Text style={{ fontSize: 15, color: 'grey', opacity: 0.8 }}>
+            <Text style={{ fontSize: 15, color: "grey", opacity: 0.8 }}>
               {`${movieDetails.tagline.substring(0, 27)}...`}
             </Text>
           </View>
@@ -193,17 +199,22 @@ export default function MovieDetail() {
 
         <View style={styles.infoContainer}>
           {movieDetails.original_language && (
-            <Text style={styles.infoText}>Language: {movieDetails.original_language}</Text>
+            <Text style={styles.infoText}>
+              Language: {movieDetails.original_language}
+            </Text>
           )}
 
           <Text style={styles.overview}>{movieDetails.overview}</Text>
 
           {movieDetails.homepage && (
-            <TouchableOpacity onPress={() => WebBrowser.openBrowserAsync(movieDetails.homepage)}>
-              <Text style={styles.infoText}>Website: {movieDetails.homepage}</Text>
+            <TouchableOpacity
+              onPress={() => WebBrowser.openBrowserAsync(movieDetails.homepage)}
+            >
+              <Text style={styles.infoText}>
+                Website: {movieDetails.homepage}
+              </Text>
             </TouchableOpacity>
           )}
-
         </View>
 
         <View style={styles.prodContainer}>
@@ -219,8 +230,10 @@ export default function MovieDetail() {
                   <Image
                     source={
                       item.logo_path
-                        ? { uri: `https://image.tmdb.org/t/p/w300${item.logo_path}` }
-                        : require('../../assets/production-placeholder.png')
+                        ? {
+                            uri: `https://image.tmdb.org/t/p/w300${item.logo_path}`,
+                          }
+                        : require("../../assets/production-placeholder.png")
                     }
                     style={styles.prodImage}
                     transition={200}
@@ -249,8 +262,10 @@ export default function MovieDetail() {
                   <Image
                     source={
                       item.profile_path
-                        ? { uri: `https://image.tmdb.org/t/p/w300${item.profile_path}` }
-                        : require('../../assets/profile-placeholder.png')
+                        ? {
+                            uri: `https://image.tmdb.org/t/p/w300${item.profile_path}`,
+                          }
+                        : require("../../assets/profile-placeholder.png")
                     }
                     style={styles.castImage}
                     transition={200}
@@ -269,32 +284,40 @@ export default function MovieDetail() {
 
         <View style={styles.trailerContainer}>
           <Text style={styles.sectionTitle}>Trailers</Text>
-          {movieDetails.videos?.results?.filter(video =>
-            video.type === "Trailer" &&
-            video.site === "YouTube" &&
-            video.official === true
+          {movieDetails.videos?.results?.filter(
+            (video) =>
+              video.type === "Trailer" &&
+              video.site === "YouTube" &&
+              video.official === true,
           ).length > 0 ? (
             <FlatList
               horizontal={true}
               showsHorizontalScrollIndicator={false}
-              data={movieDetails.videos.results.filter(video =>
-                video.type === "Trailer" &&
-                video.site === "YouTube" &&
-                video.official === true
+              data={movieDetails.videos.results.filter(
+                (video) =>
+                  video.type === "Trailer" &&
+                  video.site === "YouTube" &&
+                  video.official === true,
               )}
               keyExtractor={(video) => video.id.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  onPress={() => WebBrowser.openBrowserAsync(`https://www.youtube.com/watch?v=${item.key}`)}
+                  onPress={() =>
+                    WebBrowser.openBrowserAsync(
+                      `https://www.youtube.com/watch?v=${item.key}`,
+                    )
+                  }
                   style={{ width: 280, marginHorizontal: 4 }}
                 >
                   <Image
-                    source={{ uri: `https://img.youtube.com/vi/${item.key}/0.jpg` }}
+                    source={{
+                      uri: `https://img.youtube.com/vi/${item.key}/0.jpg`,
+                    }}
                     style={{ width: "100%", height: 157, borderRadius: 8 }}
                     transition={300}
                   />
                   <Text
-                    style={{ fontSize: 14, color: 'grey', marginTop: 4 }}
+                    style={{ fontSize: 14, color: "grey", marginTop: 4 }}
                     numberOfLines={1}
                   >
                     {item.name}
@@ -308,7 +331,10 @@ export default function MovieDetail() {
           )}
         </View>
 
-        <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteContainer}>
+        <TouchableOpacity
+          onPress={toggleFavorite}
+          style={styles.favoriteContainer}
+        >
           <Ionicons
             name={favoriteIcon}
             size={24}
@@ -316,18 +342,20 @@ export default function MovieDetail() {
             style={styles.favoriteIcon}
           />
           <Text style={styles.favoriteText}>
-            {favoriteIcon === "heart" ? "Remove from favorites" : "Add to favorites"}
+            {favoriteIcon === "heart"
+              ? "Remove from favorites"
+              : "Add to favorites"}
           </Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   infoContainer: {
     padding: 16,
@@ -336,12 +364,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     marginBottom: 16,
-    color: '#333',
+    color: "#333",
   },
   infoText: {
     fontSize: 14,
     marginBottom: 8,
-    color: '#555',
+    color: "#555",
   },
   prodContainer: {
     marginVertical: 20,
@@ -349,7 +377,7 @@ const styles = StyleSheet.create({
   },
   prodItem: {
     width: 100,
-    alignItems: 'center',
+    alignItems: "center",
     marginRight: 10,
   },
   prodImage: {
@@ -363,7 +391,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   castList: {
@@ -371,36 +399,36 @@ const styles = StyleSheet.create({
   },
   castItem: {
     width: 100,
-    alignItems: 'center',
+    alignItems: "center",
     marginRight: 10,
   },
   castImage: {
     width: 100,
     height: 150,
     borderRadius: 12,
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
   castName: {
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 5,
-    color: '#333',
+    color: "#333",
     width: 100,
   },
   castCharacter: {
     fontSize: 10,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 5,
-    color: '#333',
+    color: "#333",
     width: 100,
   },
   separator: {
     width: 10,
   },
   favoriteContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginVertical: 20,
     padding: 10,
   },
@@ -409,7 +437,7 @@ const styles = StyleSheet.create({
   },
   favoriteText: {
     fontSize: 16,
-    color: '#555',
+    color: "#555",
   },
   trailerContainer: {
     marginVertical: 20,
@@ -420,8 +448,8 @@ const styles = StyleSheet.create({
   },
   noDataText: {
     fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     marginTop: 10,
   },
 });
