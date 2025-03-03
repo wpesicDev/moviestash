@@ -37,10 +37,10 @@ export default function MovieSlider(props) {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    maxHeight: 300,
+    width: "100%",
+    maxHeight: 250,
     backgroundColor: "#fff",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   item: {
     marginBottom: 20,
