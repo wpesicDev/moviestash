@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, ScrollView, TouchableOpacity, Vibration } from 'react-native';
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router';
 import useTMDB from '../../hooks/useTMDB';
+import { ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -118,7 +119,7 @@ export default function MovieDetail() {
   if (localLoading) {
     return (
       <View>
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
