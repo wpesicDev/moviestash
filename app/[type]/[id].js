@@ -26,7 +26,7 @@ export default function MovieDetail() {
   };
 
   const toggleFavorite = async () => {
-    
+
     console.log(movieDetails)
     try {
       const currentMovie = {
@@ -43,9 +43,9 @@ export default function MovieDetail() {
 
       const favorites = await AsyncStorage.getItem('favourites');
       let favoritesOBJ = favorites ? JSON.parse(favorites) : [];
-  
+
       const index = favoritesOBJ.findIndex(movie => movie.id === currentMovie.id);
-  
+
       if (index === -1) {
         favoritesOBJ.push(currentMovie);
         setFavouriteIcon("heart");
@@ -177,7 +177,7 @@ export default function MovieDetail() {
             >
             </Text>
 
-            <RatingContainer item={movieDetails}/>
+            <RatingContainer item={movieDetails} />
             <Text
               style={{ fontSize: 24, color: 'grey', fontWeight: 700 }}
               numberOfLines={2}
@@ -217,9 +217,9 @@ export default function MovieDetail() {
                 <Image
                   source={
                     item.logo_path
-                    ? { uri: `https://image.tmdb.org/t/p/w300${item.logo_path}` }
-                    : require('../../assets/production-placeholder.png')
-                    }
+                      ? { uri: `https://image.tmdb.org/t/p/w300${item.logo_path}` }
+                      : require('../../assets/production-placeholder.png')
+                  }
                   style={styles.prodImage}
                   transition={200}
                 />
@@ -255,6 +255,39 @@ export default function MovieDetail() {
             )}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             contentContainerStyle={styles.castList}
+          />
+        </View>
+
+        <View style={styles.trailerContainer}>
+          <Text style={styles.sectionTitle}>Trailers</Text>
+          <FlatList
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            data={movieDetails.videos.results.filter(video =>
+              video.type === "Trailer" &&
+              video.site === "YouTube" &&
+              video.official === true
+            )}
+            keyExtractor={(video) => video.id.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => WebBrowser.openBrowserAsync(`https://www.youtube.com/watch?v=${item.key}`)}
+                style={{ width: 280, marginHorizontal: 4 }}
+              >
+                <Image
+                  source={{ uri: `https://img.youtube.com/vi/${item.key}/0.jpg` }}
+                  style={{ width: "100%", height: 157, borderRadius: 8 }}
+                  transition={300}
+                />
+                <Text
+                  style={{ fontSize: 14, color: 'grey', marginTop: 4 }}
+                  numberOfLines={1}
+                >
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+            contentContainerStyle={styles.trailerList}
           />
         </View>
 
@@ -360,5 +393,12 @@ const styles = StyleSheet.create({
   favoriteText: {
     fontSize: 16,
     color: '#555',
+  },
+  trailerContainer: {
+    marginVertical: 20,
+    paddingHorizontal: 16,
+  },
+  trailerList: {
+    paddingVertical: 10,
   },
 });

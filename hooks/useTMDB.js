@@ -55,12 +55,12 @@ const useMovieData = () => {
   };
 
   const getMovieDetails = (movieId) => {
-    const url = `${BASE_URL}/movie/${movieId}?append_to_response=credits&language=en-US`;
+    const url = `${BASE_URL}/movie/${movieId}?append_to_response=credits,videos&language=en-US`;
     fetchData(url, 'movie', movieId);
   };
 
   const getShowDetails = (movieId) => {
-    const url = `${BASE_URL}/tv/${movieId}?append_to_response=credits&language=en-US`;
+    const url = `${BASE_URL}/tv/${movieId}?append_to_response=credits,videos&language=en-US`;
     fetchData(url, 'show', movieId);
   };
 
