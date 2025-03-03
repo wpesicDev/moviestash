@@ -207,88 +207,104 @@ export default function MovieDetail() {
 
         <View style={styles.prodContainer}>
           <Text style={styles.sectionTitle}>Production Companies</Text>
-          <FlatList
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            data={movieDetails.production_companies}
-            keyExtractor={(studio) => studio.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.prodItem}>
-                <Image
-                  source={
-                    item.logo_path
-                      ? { uri: `https://image.tmdb.org/t/p/w300${item.logo_path}` }
-                      : require('../../assets/production-placeholder.png')
-                  }
-                  style={styles.prodImage}
-                  transition={200}
-                />
-                <Text style={styles.castName}>{item.name}</Text>
-              </View>
-            )}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-            contentContainerStyle={styles.castList}
-          />
+          {movieDetails.production_companies?.length > 0 ? (
+            <FlatList
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              data={movieDetails.production_companies}
+              keyExtractor={(studio) => studio.id.toString()}
+              renderItem={({ item }) => (
+                <View style={styles.prodItem}>
+                  <Image
+                    source={
+                      item.logo_path
+                        ? { uri: `https://image.tmdb.org/t/p/w300${item.logo_path}` }
+                        : require('../../assets/production-placeholder.png')
+                    }
+                    style={styles.prodImage}
+                    transition={200}
+                  />
+                  <Text style={styles.castName}>{item.name}</Text>
+                </View>
+              )}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+              contentContainerStyle={styles.castList}
+            />
+          ) : (
+            <Text style={styles.noDataText}>No production companies found</Text>
+          )}
         </View>
 
         <View style={styles.castContainer}>
           <Text style={styles.sectionTitle}>Cast</Text>
-          <FlatList
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            data={movieDetails.credits.cast}
-            keyExtractor={(cast) => cast.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.castItem}>
-                <Image
-                  source={
-                    item.profile_path
-                      ? { uri: `https://image.tmdb.org/t/p/w300${item.profile_path}` }
-                      : require('../../assets/profile-placeholder.png')
-                  }
-                  style={styles.castImage}
-                  transition={200}
-                />
-                <Text style={styles.castName}>{item.name}</Text>
-                <Text style={styles.castCharacter}>{item.character}</Text>
-              </View>
-            )}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-            contentContainerStyle={styles.castList}
-          />
+          {movieDetails.credits?.cast?.length > 0 ? (
+            <FlatList
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              data={movieDetails.credits.cast}
+              keyExtractor={(cast) => cast.id.toString()}
+              renderItem={({ item }) => (
+                <View style={styles.castItem}>
+                  <Image
+                    source={
+                      item.profile_path
+                        ? { uri: `https://image.tmdb.org/t/p/w300${item.profile_path}` }
+                        : require('../../assets/profile-placeholder.png')
+                    }
+                    style={styles.castImage}
+                    transition={200}
+                  />
+                  <Text style={styles.castName}>{item.name}</Text>
+                  <Text style={styles.castCharacter}>{item.character}</Text>
+                </View>
+              )}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+              contentContainerStyle={styles.castList}
+            />
+          ) : (
+            <Text style={styles.noDataText}>No cast information available</Text>
+          )}
         </View>
 
         <View style={styles.trailerContainer}>
           <Text style={styles.sectionTitle}>Trailers</Text>
-          <FlatList
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            data={movieDetails.videos.results.filter(video =>
-              video.type === "Trailer" &&
-              video.site === "YouTube" &&
-              video.official === true
-            )}
-            keyExtractor={(video) => video.id.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => WebBrowser.openBrowserAsync(`https://www.youtube.com/watch?v=${item.key}`)}
-                style={{ width: 280, marginHorizontal: 4 }}
-              >
-                <Image
-                  source={{ uri: `https://img.youtube.com/vi/${item.key}/0.jpg` }}
-                  style={{ width: "100%", height: 157, borderRadius: 8 }}
-                  transition={300}
-                />
-                <Text
-                  style={{ fontSize: 14, color: 'grey', marginTop: 4 }}
-                  numberOfLines={1}
+          {movieDetails.videos?.results?.filter(video =>
+            video.type === "Trailer" &&
+            video.site === "YouTube" &&
+            video.official === true
+          ).length > 0 ? (
+            <FlatList
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              data={movieDetails.videos.results.filter(video =>
+                video.type === "Trailer" &&
+                video.site === "YouTube" &&
+                video.official === true
+              )}
+              keyExtractor={(video) => video.id.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => WebBrowser.openBrowserAsync(`https://www.youtube.com/watch?v=${item.key}`)}
+                  style={{ width: 280, marginHorizontal: 4 }}
                 >
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            )}
-            contentContainerStyle={styles.trailerList}
-          />
+                  <Image
+                    source={{ uri: `https://img.youtube.com/vi/${item.key}/0.jpg` }}
+                    style={{ width: "100%", height: 157, borderRadius: 8 }}
+                    transition={300}
+                  />
+                  <Text
+                    style={{ fontSize: 14, color: 'grey', marginTop: 4 }}
+                    numberOfLines={1}
+                  >
+                    {item.name}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              contentContainerStyle={styles.trailerList}
+            />
+          ) : (
+            <Text style={styles.noDataText}>No trailers available</Text>
+          )}
         </View>
 
         <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteContainer}>
@@ -400,5 +416,11 @@ const styles = StyleSheet.create({
   },
   trailerList: {
     paddingVertical: 10,
+  },
+  noDataText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
