@@ -202,7 +202,7 @@ export default function MovieDetail() {
           {movieDetails.original_language && (
             <>
               <Text style={styles.infoText}>
-                {movieDetails.release_date.split('-').reverse().join('.')}
+                {movieDetails.release_date ? movieDetails.release_date.split('-').reverse().join('.') : "No release date"}
               </Text>
               <Text style={styles.infoText}>
                 Language: {movieDetails.original_language}
