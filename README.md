@@ -1,6 +1,6 @@
 
-<div style="width: 100%; display: flex; justify-content: start; align-items: center;"> 
-    <img src="./assets/icon.png" style="width: 20vw;">
+<div style="width: 100%; display: flex; justify-content: center; align-items: center;"> 
+    <img src="./assets/icon.png" style="width: 30vw;">
 </div>
 
 # 🎬 Moviestash
@@ -12,9 +12,9 @@ A simple and interactive movie browsing app built with Expo. Easily search for m
 ## 📸 Screenshots
 
 <div style="display: flex; justify-content: space-between; width: 100%; ">
-  <img src="./assets/screenshot/mainscreen.png" alt="Main Screen" width="300">
-  <img src="./assets/screenshot/detail-1.png" alt="Detailed View 1" width="300">
-  <img src="./assets/screenshot/detail-2.png" alt="Detailed View 2" width="300">
+  <img src="./assets/screenshot/mainscreen.png" alt="Main Screen" width="200">
+  <img src="./assets/screenshot/detail-1.png" alt="Detailed View 1" width="200">
+  <img src="./assets/screenshot/detail-2.png" alt="Detailed View 2" width="200">
 </div>
 
 ---
