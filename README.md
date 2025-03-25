@@ -11,7 +11,7 @@ A simple and interactive movie browsing app built with Expo. Easily search for m
 
 ## 📸 Screenshots
 
-<div style="display: flex; justify-content: space-around; align-items: center; width: 100vw; ">
+<div align="center">
   <img src="./assets/screenshot/mainscreen.png" alt="Main Screen" width="200">
   <img src="./assets/screenshot/detail-1.png" alt="Detailed View 1" width="200">
   <img src="./assets/screenshot/detail-2.png" alt="Detailed View 2" width="200">
