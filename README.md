@@ -1,6 +1,6 @@
 
 <div style="width: 100%; display: flex; justify-content: center; align-items: center;"> 
-    <img src="./assets/icon.png" style="width: 30vw;">
+    <img src="./assets/icon.png" style="width: 10vw;">
 </div>
 
 # 🎬 Moviestash
