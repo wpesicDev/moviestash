@@ -12,9 +12,13 @@ A simple and interactive movie browsing app built with Expo. Easily search for m
 ## 📸 Screenshots
 
 <div align="center">
+  &ensp;
   <img src="./assets/screenshot/mainscreen.png" alt="Main Screen" width="200">
+  &ensp;
   <img src="./assets/screenshot/detail-1.png" alt="Detailed View 1" width="200">
+  &ensp;
   <img src="./assets/screenshot/detail-2.png" alt="Detailed View 2" width="200">
+  &ensp;
 </div>
 
 ---
