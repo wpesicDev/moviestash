@@ -1,5 +1,5 @@
 
-<div style="width: 100%; display: flex; justify-content: center; align-items: center;"> 
+<div align="center">
     <img src="./assets/icon.png" style="width: 10vw;">
 </div>
 
@@ -11,7 +11,7 @@ A simple and interactive movie browsing app built with Expo. Easily search for m
 
 ## 📸 Screenshots
 
-<div style="display: flex; justify-content: space-between; width: 100%; ">
+<div style="display: flex; justify-content: space-around; align-items: center; width: 100vw; ">
   <img src="./assets/screenshot/mainscreen.png" alt="Main Screen" width="200">
   <img src="./assets/screenshot/detail-1.png" alt="Detailed View 1" width="200">
   <img src="./assets/screenshot/detail-2.png" alt="Detailed View 2" width="200">
